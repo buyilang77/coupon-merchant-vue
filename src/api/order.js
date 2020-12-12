@@ -3,7 +3,7 @@ import qs from 'qs'
 
 export function fetchList(query) {
   return request({
-    url: '/coupons',
+    url: '/orders',
     method: 'get',
     params: {
       filter: {
@@ -19,32 +19,25 @@ export function fetchList(query) {
   })
 }
 
-export function createCoupon(data) {
+export function updateOrder(id, data) {
   return request({
-    url: '/coupons',
-    method: 'post',
+    url: '/orders/' + id,
+    method: 'patch',
     data
   })
 }
 
-export function fetchCoupon(id) {
+export function orderShipment(id, data) {
   return request({
-    url: '/coupons/' + id,
+    url: '/orders/' + id + '/shipment',
+    method: 'patch',
+    data
+  })
+}
+
+export function fetchLogisticsCompanies() {
+  return request({
+    url: '/logistics-companies',
     method: 'get'
-  })
-}
-
-export function updateCoupon(id, data) {
-  return request({
-    url: '/coupons/' + id,
-    method: 'put',
-    data
-  })
-}
-
-export function destroyCoupon(id) {
-  return request({
-    url: '/coupons/' + id,
-    method: 'delete'
   })
 }

@@ -8,9 +8,6 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        添加
-      </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         导出
       </el-button>
@@ -60,14 +57,14 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="240" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
+        <template slot-scope="{row}">
           <el-button size="mini" @click="redirectToCouponItem(row.id)">
             查看兑换码
           </el-button>
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+          <el-button type="primary" size="mini" @click="redirectToEdit(row.id)">
             编辑
           </el-button>
-          <el-button size="mini" type="danger" @click="handleDestroy(row, $index)">
+          <el-button size="mini" type="danger" @click="handleDestroy(row.id)">
             删除
           </el-button>
         </template>
@@ -75,58 +72,11 @@
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="活动标题" prop="title">
-          <el-input v-model="temp.title" />
-        </el-form-item>
-        <el-form-item label="活动日期" prop="start_time" required>
-          <el-col :span="11">
-            <el-date-picker v-model="temp.start_time" type="date" value-format="yyyy-MM-dd" placeholder="开始日期" style="width: 100%;" />
-          </el-col>
-          <el-col class="line" :span="2">-</el-col>
-          <el-col :span="11">
-            <el-date-picker v-model="temp.end_time" type="date" value-format="yyyy-MM-dd" placeholder="结束日期" style="width: 100%;" />
-          </el-col>
-        </el-form-item>
-        <el-form-item label="选择商品" prop="products">
-          <el-select v-model="temp.products" multiple class="filter-item">
-            <el-option v-for="(item, index) in product_list" :key="index" :label="item.name" :value="item.id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="卡券前缀" prop="prefix">
-          <el-input v-model="temp.prefix" />
-        </el-form-item>
-        <el-form-item label="起始编号" prop="start_number">
-          <el-input-number v-model="temp.start_number" width="300px" :min="1" :max="10000000000000000" />
-        </el-form-item>
-        <el-form-item label="卡券数量" prop="quantity">
-          <el-input-number v-model="temp.quantity" :min="1" :max="100000" />
-        </el-form-item>
-        <el-form-item label="卡券长度" prop="length">
-          <el-input-number v-model="temp.length" :min="1" :max="20" />
-        </el-form-item>
-        <el-form-item label="卡券默认状态">
-          <el-radio-group v-model="temp.status" class="filter-item">
-            <el-radio v-for="(item, index) in statusOptions" :key="index" :label="index"> {{ item }} </el-radio>
-          </el-radio-group>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          确认
-        </el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { fetchList, updateCoupon, createCoupon, destroyCoupon } from '@/api/coupon'
+import { fetchList, updateCoupon, destroyCoupon } from '@/api/coupon'
 import { fetchList as productList } from '@/api/product'
 
 import waves from '@/directive/waves' // waves directive
@@ -192,17 +142,6 @@ export default {
         update: '编辑卡券',
         create: '新建卡券'
       },
-      rules: {
-        title: [{ required: true, message: '标题不可为空!', trigger: 'blur' }],
-        products: [{ required: true, message: '商品不可为空!', trigger: 'blur' }],
-        start_time: [{ required: true, message: '活动日期不可为空!', trigger: 'change' }],
-        end_time: [{ required: true, message: '活动日期不可为空!', trigger: 'change' }],
-        prefix: [{ required: true, message: '卡券前缀不可为空!', trigger: 'blur' }],
-        start_number: [{ required: true, message: '起始编号不可为空!', trigger: 'blur' }],
-        quantity: [{ required: true, message: '卡券数量不可为空!', trigger: 'blur' }],
-        length: [{ required: true, message: '卡券长度不可为空!', trigger: 'blur' }],
-        status: [{ required: true, message: '状态不可为空!', trigger: 'blur' }]
-      },
       downloadLoading: false,
       domain: process.env.VUE_APP_DOMAIN + 'storage/'
     }
@@ -233,53 +172,6 @@ export default {
         type: 'success'
       })
       row.status = status
-    },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        title: null,
-        products: [],
-        start_time: null,
-        end_time: null,
-        prefix: null,
-        start_number: null,
-        quantity: null,
-        length: null,
-        status: 0
-      }
-    },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          createCoupon(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -333,6 +225,9 @@ export default {
         }
       }))
     },
+    redirectToEdit(id) {
+      this.$router.push('/coupon/edit/' + id)
+    },
     redirectToCouponItem(id) {
       this.$router.push('/coupon/item/' + id)
     },
@@ -345,9 +240,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-  .line {
-    text-align: center;
-  }
-</style>
-

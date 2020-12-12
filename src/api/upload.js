@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function image(data) {
   return request({
-    url: '/upload_image',
+    url: '/upload-image',
     method: 'post',
     data
   })

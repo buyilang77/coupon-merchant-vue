@@ -98,7 +98,7 @@ export const constantRoutes = [
         path: 'edit/:id(\\d+)',
         component: () => import('@/views/product/edit'),
         name: 'ProductForm',
-        meta: { title: '编辑商品' },
+        meta: { title: '编辑商品', activeMenu: '/product/index' },
         hidden: true
       }
     ]
@@ -107,18 +107,36 @@ export const constantRoutes = [
     path: '/coupon',
     component: Layout,
     redirect: '/coupon/index',
+    name: '卡券管理',
+    meta: {
+      title: '卡券管理',
+      icon: 'shopping'
+    },
     children: [
       {
         path: 'index',
         component: () => import('@/views/coupon/index'),
         name: 'Coupon',
-        meta: { title: '卡券管理', icon: 'shopping', noCache: true }
+        meta: { title: '卡券列表', icon: 'list' }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/coupon/create'),
+        name: 'CouponCreate',
+        meta: { title: '添加卡券', icon: 'edit' }
       },
       {
         path: 'item/:id(\\d+)',
         component: () => import('@/views/coupon/item'),
         name: 'Coupon items',
         meta: { title: '查看兑换码', noCache: true, activeMenu: '/coupon/index' },
+        hidden: true
+      },
+      {
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/coupon/edit'),
+        name: 'CouponEdit',
+        meta: { title: '编辑卡券', activeMenu: '/coupon/index' },
         hidden: true
       }
     ]
@@ -141,14 +159,14 @@ export const constantRoutes = [
       },
       {
         path: 'shipped',
-        component: () => import('@/views/order/index'),
+        component: () => import('@/views/order/shipped'),
         name: 'Shipped',
         meta: { title: '已发货列表' }
       },
       {
-        path: 'unshipped',
-        component: () => import('@/views/order/item'),
-        name: 'Unshipped',
+        path: 'not-shipped',
+        component: () => import('@/views/order/not-shipped'),
+        name: 'NotShipped',
         meta: { title: '未发货列表' }
       }
     ]

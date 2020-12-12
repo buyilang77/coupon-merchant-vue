@@ -7,7 +7,7 @@ export default {
   components: { OrderList },
   data() {
     return {
-      type: 'index'
+      type: 'shipped'
     }
   }
 }
