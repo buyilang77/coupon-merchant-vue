@@ -8,9 +8,6 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-        导出
-      </el-button>
     </div>
 
     <el-table :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
@@ -80,7 +77,6 @@ import { fetchList, updateCoupon, destroyCoupon } from '@/api/coupon'
 import { fetchList as productList } from '@/api/product'
 
 import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   name: 'Coupon',
@@ -202,34 +198,11 @@ export default {
         this.list.splice(index, 1)
       })
     },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'status']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
     redirectToEdit(id) {
-      this.$router.push('/coupon/edit/' + id)
+      this.$router.push('/coupons/edit/' + id)
     },
     redirectToCouponItem(id) {
-      this.$router.push('/coupon/item/' + id)
+      this.$router.push('/coupons/item/' + id)
     },
     productText(product) {
       const item = this.product_list.find((item) => {

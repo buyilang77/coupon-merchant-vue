@@ -133,7 +133,7 @@ export default {
                 duration: 2000
               })
               this.loading = false
-              this.$router.push('/coupon/index')
+              this.$router.push('/coupons/index')
             })
           } else {
             createCoupon(this.postForm).then(response => {
@@ -145,7 +145,7 @@ export default {
                 duration: 2000
               })
               this.loading = false
-              this.$router.push('/coupon/index')
+              this.$router.push('/coupons/index')
             })
           }
         } else {

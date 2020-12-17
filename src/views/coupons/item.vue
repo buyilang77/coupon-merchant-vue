@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="listQuery.code" placeholder="请输入关键字" style="width: 200px;" class="filter-item mr-1" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.status" placeholder="请选择状态" clearable class="filter-item mr-1" style="width: 130px">
+      <el-select v-model="listQuery.open_status" placeholder="请选择状态" clearable class="filter-item mr-1" style="width: 130px">
         <el-option v-for="(item, index) in statusOptions" :key="index" :label="item" :value="index" />
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
@@ -19,7 +19,7 @@
       </el-button>
     </div>
 
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">>
+    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" />
       <el-table-column align="center" label="兑换码">
         <template slot-scope="{row}">
@@ -35,25 +35,25 @@
 
       <el-table-column class-name="status-col" label="开启状态" width="110">
         <template slot-scope="{row}">
-          <el-tag :type="row.status | statusType">
-            {{ row.status | openStatusFilter }}
+          <el-tag :type="row.open_status | openStatusType">
+            {{ row.open_status | openStatusFilter }}
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="兑换状态" width="110">
         <template slot-scope="{row}">
-          <el-tag :type="row.status | redemptionStatusType">
-            {{ row.status | redemptionStatusFilter }}
+          <el-tag :type="row.redemption_status | redemptionStatusType">
+            {{ row.redemption_status | redemptionStatusFilter }}
           </el-tag>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="操作" width="120">
         <template slot-scope="{row}">
-          <el-button v-if="row.status === 0" type="primary" size="mini" @click="handleModifyStatus(row, 1)">
+          <el-button v-if="row.open_status === 0" type="primary" size="mini" @click="handleModifyStatus(row, 1)">
             开启
           </el-button>
-          <el-button v-if="row.status === 1" type="info" size="mini" @click="handleModifyStatus(row, 0)">
+          <el-button v-if="row.open_status === 1" type="info" size="mini" @click="handleModifyStatus(row, 0)">
             关闭
           </el-button>
         </template>
@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { fetchList, updateItem } from '@/api/coupon_item'
+import { fetchList, updateItem, bulkUpdateItem } from '@/api/coupon_item'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
@@ -84,24 +84,21 @@ export default {
     redemptionStatusFilter(status) {
       const statusMap = {
         0: '未兑换',
-        1: '未兑换',
-        2: '已兑换'
+        1: '已兑换'
       }
       return statusMap[status]
     },
-    statusType(status) {
+    openStatusType(status) {
       const statusMap = {
         0: 'primary',
-        1: 'success',
-        2: 'info'
+        1: 'success'
       }
       return statusMap[status]
     },
     redemptionStatusType(status) {
       const statusMap = {
         0: 'primary',
-        1: 'primary',
-        2: 'info'
+        1: 'info'
       }
       return statusMap[status]
     }
@@ -116,18 +113,16 @@ export default {
         page: 1,
         limit: 20,
         code: undefined,
-        status: undefined
+        open_status: undefined,
+        redemption_status: undefined
       },
       updateItemParameters: {
-        status: undefined,
-        type: undefined,
-        item: undefined,
+        open_status: undefined,
         items: undefined
       },
       statusOptions: {
         0: '未开启',
-        1: '未兑换',
-        2: '已兑换'
+        1: '已开启'
       },
       downloadLoading: false,
       multipleSelection: []
@@ -151,11 +146,9 @@ export default {
       this.getList(this.id)
     },
     handleModifyStatus(row, status) {
-      this.updateItemParameters.status = status
-      this.updateItemParameters.type = 1
-      this.updateItemParameters.item = row.id
+      this.updateItemParameters.open_status = status
       updateItem(row.id, this.updateItemParameters).then(response => {
-        row.status = status
+        row.open_status = status
         this.$message({
           message: response.message,
           type: 'success'
@@ -171,14 +164,13 @@ export default {
         })
         return
       }
-      this.updateItemParameters.status = status
-      this.updateItemParameters.type = 2
+      this.updateItemParameters.open_status = status
       this.updateItemParameters.items = multipleSelection.map((item) => {
         return item.id
       })
-      updateItem(this.id, this.updateItemParameters).then(response => {
+      bulkUpdateItem(this.updateItemParameters).then(response => {
         multipleSelection.map((item) => {
-          item.status = status
+          item.open_status = status
           return item
         })
         this.$message({
@@ -190,16 +182,27 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'status']
-        const data = this.formatJson(filterVal)
+        const tHeader = ['兑换码', '密码', '领取链接', '开启状态', '兑换状态']
+        const filterVal = ['code', 'password', 'qr_code_link', 'open_status_text', 'redemption_status_text']
+        const data = this.formatItem(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: 'table-list'
+          filename: '兑换码列表'
         })
         this.downloadLoading = false
       })
+    },
+    formatItem(filterVal) {
+      if (this.multipleSelection.length > 0) {
+        return this.multipleSelection.map(v => filterVal.map(j => {
+          return v[j]
+        }))
+      } else {
+        return this.list.map(v => filterVal.map(j => {
+          return v[j]
+        }))
+      }
     },
     handleSelectionChange(val) {
       this.multipleSelection = val

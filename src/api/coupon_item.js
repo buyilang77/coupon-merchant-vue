@@ -21,7 +21,15 @@ export function fetchList(id, query) {
 
 export function updateItem(id, data) {
   return request({
-    url: '/coupons/' + id + '/item',
+    url: '/coupons/items/' + id,
+    method: 'patch',
+    data
+  })
+}
+
+export function bulkUpdateItem(data) {
+  return request({
+    url: '/coupons/items/bulk-update',
     method: 'patch',
     data
   })

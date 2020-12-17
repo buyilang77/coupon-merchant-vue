@@ -68,7 +68,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+        meta: { title: '仪表盘', icon: 'dashboard', affix: true }
       }
     ]
   },
@@ -104,9 +104,9 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/coupon',
+    path: '/coupons',
     component: Layout,
-    redirect: '/coupon/index',
+    redirect: '/coupons/index',
     name: '卡券管理',
     meta: {
       title: '卡券管理',
@@ -115,26 +115,26 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/coupon/index'),
+        component: () => import('@/views/coupons/index'),
         name: 'Coupon',
-        meta: { title: '卡券列表', icon: 'list' }
+        meta: { title: '卡券列表', icon: 'list', noCache: true }
       },
       {
         path: 'create',
-        component: () => import('@/views/coupon/create'),
+        component: () => import('@/views/coupons/create'),
         name: 'CouponCreate',
         meta: { title: '添加卡券', icon: 'edit' }
       },
       {
         path: 'item/:id(\\d+)',
-        component: () => import('@/views/coupon/item'),
+        component: () => import('@/views/coupons/item'),
         name: 'Coupon items',
         meta: { title: '查看兑换码', noCache: true, activeMenu: '/coupon/index' },
         hidden: true
       },
       {
         path: 'edit/:id(\\d+)',
-        component: () => import('@/views/coupon/edit'),
+        component: () => import('@/views/coupons/edit'),
         name: 'CouponEdit',
         meta: { title: '编辑卡券', activeMenu: '/coupon/index' },
         hidden: true
