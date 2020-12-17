@@ -13,7 +13,8 @@
       </el-button>
     </div>
 
-    <el-table :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
+    <el-table :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55" />
       <el-table-column label="所属活动" align="center">
         <template slot-scope="{row}">
           <span :title="row.title">{{ row.title }}</span>
@@ -26,7 +27,7 @@
       </el-table-column>
       <el-table-column label="所提商品" align="center">
         <template slot-scope="{row}">
-          <el-tag v-for="(product, index) in row.products" :key="index" style="margin-right:2px">{{ productText(product) }}</el-tag>
+          <el-tag v-for="(product, index) in row.products" :key="index" style="margin-right:2px">{{ product }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="提货时间" width="200px" align="center">
@@ -124,7 +125,6 @@
 import { fetchList, updateOrder, orderShipment, fetchLogisticsCompanies } from '@/api/order'
 import { fetchList as productList } from '@/api/product'
 import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { regionData, CodeToText } from 'element-china-area-data'
 export default {
@@ -188,7 +188,8 @@ export default {
         status: [{ required: true, message: '状态不可为空!', trigger: 'blur' }]
       },
       downloadLoading: false,
-      regionOptions: regionData
+      regionOptions: regionData,
+      multipleSelection: []
     }
   },
   created() {
@@ -270,24 +271,26 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'status']
-        const data = this.formatJson(filterVal)
+        const tHeader = ['活动名称', '物流公司', '单号', '商品信息', '收货人', '收货电话', '收货地址']
+        const filterVal = ['title', 'logistics_company', 'tracking_number', 'products', 'consignee', 'phone', 'address']
+        const data = this.formatItem(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: 'table-list'
+          filename: this.$route.meta.title
         })
         this.downloadLoading = false
       })
     },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
+    formatItem(filterVal) {
+      let items = []
+      if (this.multipleSelection.length > 0) {
+        items = this.multipleSelection
+      } else {
+        items = this.list
+      }
+      return items.map(v => filterVal.map(j => {
+        return v[j]
       }))
     },
     confirmShipment(temp) {
@@ -302,17 +305,14 @@ export default {
         })
       })
     },
-    productText(product) {
-      const item = this.product_list.find((item) => {
-        return item.id === product
-      })
-      return item && item.name
-    },
     formatRegion(region) {
       const item = region.map((item) => {
         return CodeToText[item]
       })
       return item.join('')
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     }
   }
 }
