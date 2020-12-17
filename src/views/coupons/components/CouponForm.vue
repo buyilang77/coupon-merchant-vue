@@ -95,7 +95,6 @@ export default {
         products: [{ required: true, message: '商品不可为空!', trigger: 'blur' }],
         start_time: [{ required: true, message: '活动日期不可为空!', trigger: 'change' }],
         end_time: [{ required: true, message: '活动日期不可为空!', trigger: 'change' }],
-        prefix: [{ required: true, message: '卡券前缀不可为空!', trigger: 'blur' }],
         start_number: [{ required: true, message: '起始编号不可为空!', trigger: 'blur' }],
         quantity: [{ required: true, message: '卡券数量不可为空!', trigger: 'blur' }],
         length: [{ required: true, message: '卡券长度不可为空!', trigger: 'blur' }],

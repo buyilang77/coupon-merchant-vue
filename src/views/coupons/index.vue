@@ -57,14 +57,14 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="240" class-name="small-padding fixed-width">
-        <template slot-scope="{row}">
+        <template slot-scope="{row, index}">
           <el-button size="mini" @click="redirectToCouponItem(row.id)">
             查看兑换码
           </el-button>
           <el-button type="primary" size="mini" @click="redirectToEdit(row.id)">
             编辑
           </el-button>
-          <el-button size="mini" type="danger" @click="handleDestroy(row.id)">
+          <el-button :disabled="row.status !== 0" size="mini" type="danger" @click="handleDestroy(row.id, index)">
             删除
           </el-button>
         </template>
@@ -123,7 +123,7 @@ export default {
         title: undefined,
         status: undefined
       },
-      statusOptions: ['未启用', '启用'],
+      statusOptions: ['未开始', '进行中', '已结束'],
       temp: {
         id: undefined,
         title: null,
@@ -191,8 +191,8 @@ export default {
         }
       })
     },
-    handleDestroy(row, index) {
-      destroyCoupon(row.id).then(response => {
+    handleDestroy(id, index) {
+      destroyCoupon(id).then(response => {
         this.$notify({
           title: 'Success',
           message: '删除成功!',
@@ -235,7 +235,7 @@ export default {
       const item = this.product_list.find((item) => {
         return item.id === product
       })
-      return item.name
+      return item && item.name
     }
   }
 }

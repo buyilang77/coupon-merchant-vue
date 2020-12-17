@@ -33,10 +33,17 @@
         </template>
       </el-table-column>
 
-      <el-table-column class-name="status-col" label="状态" width="110">
+      <el-table-column class-name="status-col" label="开启状态" width="110">
         <template slot-scope="{row}">
           <el-tag :type="row.status | statusType">
-            {{ row.status | statusFilter }}
+            {{ row.status | openStatusFilter }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="兑换状态" width="110">
+        <template slot-scope="{row}">
+          <el-tag :type="row.status | redemptionStatusType">
+            {{ row.status | redemptionStatusFilter }}
           </el-tag>
         </template>
       </el-table-column>
@@ -67,9 +74,16 @@ export default {
   components: { Pagination },
   directives: { waves },
   filters: {
-    statusFilter(status) {
+    openStatusFilter(status) {
       const statusMap = {
         0: '未开启',
+        1: '已开启'
+      }
+      return statusMap[status]
+    },
+    redemptionStatusFilter(status) {
+      const statusMap = {
+        0: '未兑换',
         1: '未兑换',
         2: '已兑换'
       }
@@ -79,6 +93,14 @@ export default {
       const statusMap = {
         0: 'primary',
         1: 'success',
+        2: 'info'
+      }
+      return statusMap[status]
+    },
+    redemptionStatusType(status) {
+      const statusMap = {
+        0: 'primary',
+        1: 'primary',
         2: 'info'
       }
       return statusMap[status]
