@@ -5,10 +5,10 @@
         <el-form-item label="活动标题" prop="title">
           <el-input v-model="postForm.title" />
         </el-form-item>
-        <el-form-item label="客服电话" prop="services_phone">
+        <el-form-item label="客服电话">
           <el-input v-model="postForm.services_phone" />
         </el-form-item>
-        <el-form-item label="活动说明" prop="activity_description">
+        <el-form-item label="活动说明">
           <el-input v-model="postForm.activity_description" type="textarea" />
         </el-form-item>
         <el-form-item label="活动日期" required>
@@ -29,7 +29,7 @@
             <el-option v-for="(item, index) in product_list" :key="index" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
-        <el-form-item label="卡券前缀" prop="prefix">
+        <el-form-item label="卡券前缀">
           <el-input v-model="postForm.prefix" />
         </el-form-item>
         <el-form-item label="起始编号" prop="start_number">
@@ -69,7 +69,7 @@ const defaultForm = {
   end_time: null,
   prefix: null,
   start_number: null,
-  quantity: null,
+  quantity: 500,
   length: null,
   status: 0
 }
@@ -90,8 +90,6 @@ export default {
       statusOptions: ['未启用', '启用'],
       rules: {
         title: [{ required: true, message: '标题不可为空!', trigger: 'blur' }],
-        services_phone: [{ required: true, message: '客服电话不可为空!', trigger: 'blur' }],
-        activity_description: [{ required: true, message: '活动说明不可为空!', trigger: 'blur' }],
         products: [{ required: true, message: '商品不可为空!', trigger: 'blur' }],
         start_time: [{ required: true, message: '活动日期不可为空!', trigger: 'change' }],
         end_time: [{ required: true, message: '活动日期不可为空!', trigger: 'change' }],
