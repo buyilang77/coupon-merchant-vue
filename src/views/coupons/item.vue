@@ -130,12 +130,12 @@ export default {
   },
   created() {
     this.id = this.$route.params.id
-    this.getList(this.id)
+    this.getList()
   },
   methods: {
-    getList(id) {
+    getList() {
       this.listLoading = true
-      fetchList(id, this.listQuery).then(response => {
+      fetchList(this.id, this.listQuery).then(response => {
         this.list = response.data
         this.total = response.meta.total
         this.listLoading = false
@@ -210,14 +210,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  .edit-input {
-    padding-right: 100px;
-  }
-  .cancel-btn {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-  }
-</style>
