@@ -27,7 +27,7 @@
       </el-table-column>
       <el-table-column label="所提商品" align="center">
         <template slot-scope="{row}">
-          <el-tag v-for="(product, index) in row.products" :key="index" style="margin-right:2px">{{ product }}</el-tag>
+          <el-tag style="margin-right:2px">{{ row.product }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="提货时间" width="200px" align="center">
@@ -272,7 +272,7 @@ export default {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
         const tHeader = ['活动名称', '物流公司', '单号', '商品信息', '收货人', '收货电话', '收货地址']
-        const filterVal = ['title', 'logistics_company', 'tracking_number', 'products', 'consignee', 'phone', 'address']
+        const filterVal = ['title', 'logistics_company', 'tracking_number', 'product', 'consignee', 'phone', 'address']
         const data = this.formatItem(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
