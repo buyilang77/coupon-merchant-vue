@@ -39,7 +39,10 @@
           <el-input-number v-model="postForm.quantity" :min="1" :max="100000" />
         </el-form-item>
         <el-form-item label="编码长度" prop="length">
-          <el-input-number v-model="postForm.length" :min="1" :max="20" />
+          <el-input-number v-model="postForm.length" :min="4" :max="12" />
+          <div>
+            <small class="length-hint">编码长度必须介于 4 - 12 之间</small>
+          </div>
         </el-form-item>
         <el-form-item label="卡券默认状态">
           <el-radio-group v-model="postForm.status" class="filter-item">
@@ -196,5 +199,8 @@ export default {
   .title-label {
     color: #9E9E9E;
     font-size: 18px;
+  }
+  .length-hint {
+    color: #9E9E9E;
   }
 </style>
