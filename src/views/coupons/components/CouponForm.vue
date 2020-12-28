@@ -25,7 +25,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="选择商品" prop="products">
-          <el-select v-model="postForm.products" multiple class="filter-item">
+          <el-select v-model="postForm.products" multiple class="filter-item width-100">
             <el-option v-for="(item, index) in product_list" :key="index" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
