@@ -31,9 +31,14 @@
           <span>{{ row.prefix }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="起始编码" align="center">
+      <el-table-column label="预览地址" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.start_number }}</span>
+          <el-link type="info" :href="row.qr_code_link" target="_blank">{{ row.qr_code_link }}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="二维码" align="center" width="95">
+        <template slot-scope="{row}">
+          <qrcode-vue :value="row.qr_code_link" class="ddd" size="50" level="H" />
         </template>
       </el-table-column>
       <el-table-column label="提货卡总量" align="center" width="95">
@@ -75,12 +80,12 @@
 <script>
 import { fetchList, updateCoupon, destroyCoupon } from '@/api/coupon'
 import { fetchList as productList } from '@/api/product'
-
+import QrcodeVue from 'qrcode.vue'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   name: 'Coupon',
-  components: { Pagination },
+  components: { Pagination, QrcodeVue },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -138,8 +143,7 @@ export default {
         update: '编辑卡券',
         create: '新建卡券'
       },
-      downloadLoading: false,
-      domain: process.env.VUE_APP_DOMAIN + 'storage/'
+      downloadLoading: false
     }
   },
   created() {
