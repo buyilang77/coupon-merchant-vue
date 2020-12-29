@@ -1,7 +1,7 @@
 <template>
   <div class="createPost-container">
     <div class="createPost-main-container">
-      <el-form ref="postForm" :rules="rules" :model="postForm" label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
+      <el-form ref="postForm" :rules="rules" :model="postForm" label-position="left" label-width="110px" style="width: 400px; margin-left:50px;">
         <el-form-item label="活动标题" prop="title">
           <el-input v-model="postForm.title" />
         </el-form-item>
@@ -44,7 +44,7 @@
             <small class="length-hint">编码长度必须介于 4 - 12 之间</small>
           </div>
         </el-form-item>
-        <el-form-item label="卡券默认状态">
+        <el-form-item label="兑换码默认状态">
           <el-radio-group v-model="postForm.status" class="filter-item">
             <el-radio v-for="(item, index) in statusOptions" :key="index" :label="index"> {{ item }} </el-radio>
           </el-radio-group>
