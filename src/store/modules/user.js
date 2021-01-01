@@ -3,9 +3,12 @@ import { getAccessToken, setAccessToken, removeToken } from '@/utils/auth'
 
 const state = {
   access_token: getAccessToken(),
-  name: '',
+  username: '',
+  surname: '',
+  merchant_name: '',
+  phone: '',
   avatar: '',
-  introduction: '',
+  region: [],
   roles: []
 }
 
@@ -13,11 +16,20 @@ const mutations = {
   SET_ACCESS_TOKEN: (state, access_token) => {
     state.access_token = access_token
   },
-  SET_INTRODUCTION: (state, introduction) => {
-    state.introduction = introduction
+  SET_USERNAME: (state, username) => {
+    state.username = username
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_SURNAME: (state, surname) => {
+    state.surname = surname
+  },
+  SET_MERCHANT_NAME: (state, merchant_name) => {
+    state.merchant_name = merchant_name
+  },
+  SET_PHONE: (state, phone) => {
+    state.phone = phone
+  },
+  SET_REGION: (state, region) => {
+    state.region = region
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
@@ -59,20 +71,20 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.access_token).then(response => {
         const { data } = response
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
         data.roles = ['admin']
         data.avatar = require('@/assets/avatars/phper.png')
-        const { roles, name, avatar, introduction } = data
+        const { roles, username, surname, merchant_name, phone, region, avatar } = data
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
         commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
+        commit('SET_USERNAME', username)
+        commit('SET_SURNAME', surname)
+        commit('SET_PHONE', phone)
+        commit('SET_REGION', region)
         commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
+        commit('SET_MERCHANT_NAME', merchant_name)
         resolve(data)
       }).catch(error => {
         reject(error)

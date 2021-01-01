@@ -23,6 +23,14 @@ export function getInfo() {
   })
 }
 
+export function update(data) {
+  return request({
+    url: '/user',
+    method: 'patch',
+    data
+  })
+}
+
 export function logout() {
   return request({
     url: '/authorizations/current',
