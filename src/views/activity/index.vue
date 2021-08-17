@@ -16,30 +16,53 @@
           <span :title="row.title">{{ row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="编码前缀" align="center" width="200">
+      <el-table-column label="卡券售价" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.prefix }}</span>
+          <span :title="row.price">{{ row.price }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="提货卡总量" align="center" width="95">
+      <el-table-column label="卡券面值" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.quantity }}</span>
+          <span :title="row.original_price">{{ row.original_price }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="已兑换数量" align="center" width="95">
+      <el-table-column label="活动日期" width="200px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.usage_amount }}</span>
+          <span>{{ row.start_time }} - {{ row.end_time }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="兑换商品" align="center">
+        <template slot-scope="{row}">
+          <el-tag v-for="(product, index) in row.products" :key="index">{{ productText(product) }}</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="预览地址" align="center">
+        <template slot-scope="{row}">
+          <el-link type="info" :href="row.qr_code_link" target="_blank">{{ row.qr_code_link }}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="二维码" align="center" width="95">
+        <template slot-scope="{row}">
+          <qrcode-vue :value="row.qr_code_link" class="ddd" size="50" level="H" />
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" class-name="status-col" width="100">
+        <template slot-scope="{row}">
+          <el-tag :type="row.status | statusType">
+            {{ row.status | statusFilter }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="240" class-name="small-padding fixed-width">
         <template slot-scope="{row, index}">
-          <el-button size="mini" @click="redirectToCouponItem(row.id)">
-            查看兑换码
+          <el-button type="success" size="mini" @click="redirectToCouponItem(row.id)">
+            卡密管理
           </el-button>
           <el-button type="primary" size="mini" @click="redirectToEdit(row.id)">
             编辑
           </el-button>
-          <el-button :disabled="row.status !== 0" size="mini" type="danger" @click="handleDestroy(row.id, index)">
+          <el-button size="mini" type="danger" @click="handleDestroy(row.id, index)">
             删除
           </el-button>
         </template>
@@ -51,13 +74,14 @@
 </template>
 
 <script>
-import { fetchList, updateCoupon, destroyCoupon } from '@/api/coupon'
+import { fetchList, updateActivity, destroyActivity } from '@/api/activity'
 import { fetchList as productList } from '@/api/product'
+import QrcodeVue from 'qrcode.vue'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
-  name: 'Coupon',
-  components: { Pagination },
+  name: 'Activity',
+  components: { Pagination, QrcodeVue },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -149,7 +173,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          updateCoupon(tempData.id, tempData).then(response => {
+          updateActivity(tempData.id, tempData).then(response => {
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
@@ -164,7 +188,7 @@ export default {
       })
     },
     handleDestroy(id, index) {
-      destroyCoupon(id).then(response => {
+      destroyActivity(id).then(response => {
         this.$notify({
           title: 'Success',
           message: '删除成功!',
@@ -175,7 +199,7 @@ export default {
       })
     },
     redirectToEdit(id) {
-      this.$router.push('/coupons/edit/' + id)
+      this.$router.push('/activity/edit/' + id)
     },
     redirectToCouponItem(id) {
       this.$router.push('/coupons/item/' + id)

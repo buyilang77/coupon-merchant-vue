@@ -105,10 +105,42 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/activity',
+    component: Layout,
+    redirect: '/activity/index',
+    name: 'Activity',
+    meta: {
+      title: '活动管理',
+      icon: 'shopping'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/activity/index'),
+        name: 'ActivityIndex',
+        meta: { title: '活动列表', icon: 'list', noCache: true }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/activity/create'),
+        name: 'ActivityCreate',
+        meta: { title: '添加活动', icon: 'edit' }
+      },
+      {
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/activity/edit'),
+        name: 'ActivityEdit',
+        meta: { title: '编辑活动', activeMenu: '/activity/index' },
+        hidden: true
+      }
+    ]
+  },
+  {
     path: '/coupons',
     component: Layout,
     redirect: '/coupons/index',
     name: '卡券管理',
+    hidden: true,
     meta: {
       title: '卡券管理',
       icon: 'shopping'
@@ -118,26 +150,21 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/coupons/index'),
         name: 'Coupon',
-        meta: { title: '卡券列表', icon: 'list', noCache: true }
-      },
-      {
-        path: 'create',
-        component: () => import('@/views/coupons/create'),
-        name: 'CouponCreate',
-        meta: { title: '添加卡券', icon: 'edit' }
+        meta: { title: '卡密管理', icon: 'list', noCache: true },
+        hidden: true
       },
       {
         path: 'item/:id(\\d+)',
         component: () => import('@/views/coupons/item'),
         name: 'Coupon items',
-        meta: { title: '查看兑换码', noCache: true, activeMenu: '/coupon/index' },
+        meta: { title: '查看兑换码', noCache: true, activeMenu: '/activity/index' },
         hidden: true
       },
       {
         path: 'edit/:id(\\d+)',
         component: () => import('@/views/coupons/edit'),
         name: 'CouponEdit',
-        meta: { title: '编辑卡券', activeMenu: '/coupon/index' },
+        meta: { title: '编辑卡券', activeMenu: '/coupons/index' },
         hidden: true
       }
     ]

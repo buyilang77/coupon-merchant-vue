@@ -17,12 +17,9 @@
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-circle-close" @click="bulkUpdateStatus(0)">
         关闭
       </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="success" icon="el-icon-circle-plus-outline" @click="dialogFormVisible = true">
-        生成卡密
-      </el-button>
     </div>
 
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table :data="list" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" />
       <el-table-column align="center" label="兑换码">
         <template slot-scope="{row}">
@@ -63,29 +60,6 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog title="卡密管理" width="30%" :visible.sync="dialogFormVisible">
-      <el-form ref="couponForm" :rules="rules" :model="couponForm" label-position="left" label-width="110px" style="width: 80%; margin-left:50px;">
-        <el-form-item label="卡券前缀">
-          <el-input v-model="couponForm.prefix" />
-        </el-form-item>
-        <el-form-item label="起始编号" prop="start_number">
-          <el-input-number v-model="couponForm.start_number" width="300px" :min="1" :max="10000000000000000" />
-        </el-form-item>
-        <el-form-item label="卡券数量" prop="quantity">
-          <el-input-number v-model="couponForm.quantity" :min="1" :max="100000" />
-        </el-form-item>
-        <el-form-item label="编码长度" prop="length">
-          <el-input-number v-model="couponForm.length" :min="4" :max="12" />
-          <div>
-            <small class="length-hint">编码长度必须介于 4 - 12 之间</small>
-          </div>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-      </div>
-    </el-dialog>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
@@ -93,21 +67,7 @@
 <script>
 import { fetchList, updateItem, bulkUpdateItem } from '@/api/coupon_item'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination'
-import { fetchCoupon, updateCoupon } from '@/api/coupon' // Secondary package based on el-pagination
-
-const defaultCouponForm = {
-  id: undefined,
-  services_phone: null,
-  activity_description: null,
-  start_time: null,
-  end_time: null,
-  prefix: null,
-  start_number: null,
-  quantity: 500,
-  length: null,
-  status: 0
-}
+import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
   name: 'CouponItems',
@@ -149,7 +109,6 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      loading: false,
       listQuery: {
         page: 1,
         limit: 20,
@@ -166,21 +125,12 @@ export default {
         1: '已开启'
       },
       downloadLoading: false,
-      dialogFormVisible: false,
-      multipleSelection: [],
-      couponForm: Object.assign({}, defaultCouponForm),
-      rules: {
-        title: [{ required: true, message: '标题不可为空!', trigger: 'blur' }],
-        products: [{ required: true, message: '商品不可为空!', trigger: 'blur' }],
-        start_time: [{ required: true, message: '活动日期不可为空!', trigger: 'change' }],
-        end_time: [{ required: true, message: '活动日期不可为空!', trigger: 'change' }]
-      }
+      multipleSelection: []
     }
   },
   created() {
     this.id = this.$route.params.id
     this.getList()
-    this.getCoupon()
   },
   methods: {
     getList() {
@@ -256,32 +206,6 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
-    },
-    getCoupon() {
-      fetchCoupon(this.id).then(response => {
-        this.couponForm = response.data
-      })
-    },
-    submitForm() {
-      this.$refs.couponForm.validate(valid => {
-        if (valid) {
-          updateCoupon(this.couponForm.id, this.couponForm).then(response => {
-            this.loading = true
-            this.$notify({
-              title: '成功',
-              message: response.message,
-              type: 'success',
-              duration: 2000
-            })
-            this.getList()
-            this.dialogFormVisible = false
-          })
-          this.$router.push('/coupons/item/' + this.id)
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
     }
   }
 }
