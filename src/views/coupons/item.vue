@@ -36,6 +36,14 @@
         </template>
       </el-table-column>
 
+      <el-table-column width="110px" align="center" label="生成提货信息">
+        <template slot-scope="{row}">
+          <el-button size="mini" @click="handleCopy(row, $event)">
+            生成
+          </el-button>
+        </template>
+      </el-table-column>
+
       <el-table-column class-name="status-col" label="开启状态" width="110">
         <template slot-scope="{row}">
           <el-tag :type="row.open_status | openStatusType">
@@ -95,7 +103,7 @@ import { fetchList, updateItem, bulkUpdateItem } from '@/api/coupon_item'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination'
 import { fetchCoupon, updateCoupon } from '@/api/coupon' // Secondary package based on el-pagination
-
+import clip from '@/utils/clipboard' // use clipboard directly
 const defaultCouponForm = {
   id: undefined,
   services_phone: null,
@@ -204,6 +212,11 @@ export default {
           type: 'success'
         })
       })
+    },
+    handleCopy(item, event) {
+      // console.log(text)
+      const info = '提货网址: ' + item.qr_code_link + '\n卡号: ' + item.code + '\n卡密: ' + item.password
+      clip(info, event)
     },
     bulkUpdateStatus(status) {
       const multipleSelection = this.multipleSelection
