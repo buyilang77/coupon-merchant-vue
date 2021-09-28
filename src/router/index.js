@@ -63,13 +63,12 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/coupons/index',
-    hidden: true,
     children: [
       {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: '仪表盘', icon: 'dashboard' }
+        meta: { title: '首页', icon: 'dashboard' }
       }
     ]
   },
@@ -110,7 +109,7 @@ export const constantRoutes = [
     redirect: '/activity/index',
     name: 'Activity',
     meta: {
-      title: '活动管理',
+      title: '卡券管理',
       icon: 'shopping'
     },
     children: [
@@ -118,19 +117,19 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/activity/index'),
         name: 'ActivityIndex',
-        meta: { title: '活动列表', icon: 'list', noCache: true }
+        meta: { title: '卡券列表', icon: 'list', noCache: true }
       },
       {
         path: 'create',
         component: () => import('@/views/activity/create'),
         name: 'ActivityCreate',
-        meta: { title: '添加活动', icon: 'edit' }
+        meta: { title: '添加卡券', icon: 'edit' }
       },
       {
         path: 'edit/:id(\\d+)',
         component: () => import('@/views/activity/edit'),
         name: 'ActivityEdit',
-        meta: { title: '编辑活动', activeMenu: '/activity/index' },
+        meta: { title: '编辑卡券', activeMenu: '/activity/index' },
         hidden: true
       }
     ]
@@ -166,6 +165,24 @@ export const constantRoutes = [
         name: 'CouponEdit',
         meta: { title: '编辑卡券', activeMenu: '/coupons/index' },
         hidden: true
+      }
+    ]
+  },
+  {
+    path: '/shop-order',
+    component: Layout,
+    redirect: '/shop-order/index',
+    name: '购卡订单',
+    meta: {
+      title: '购卡订单',
+      icon: 'list'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/shopOrder/index'),
+        name: 'ShopOrder',
+        meta: { title: '购卡订单' }
       }
     ]
   },

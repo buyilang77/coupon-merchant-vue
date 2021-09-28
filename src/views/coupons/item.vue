@@ -88,6 +88,11 @@
             <small class="length-hint">编码长度必须介于 4 - 12 之间</small>
           </div>
         </el-form-item>
+        <el-form-item label="卡密默认状态">
+          <el-radio-group v-model="couponForm.status" class="filter-item">
+            <el-radio v-for="(item, index) in statusOptions" :key="index" :label="index"> {{ item }} </el-radio>
+          </el-radio-group>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -114,7 +119,7 @@ const defaultCouponForm = {
   start_number: null,
   quantity: 500,
   length: null,
-  status: 0
+  status: 1
 }
 
 export default {
@@ -169,10 +174,7 @@ export default {
         open_status: undefined,
         items: undefined
       },
-      statusOptions: {
-        0: '未开启',
-        1: '已开启'
-      },
+      statusOptions: ['未开启', '已开启'],
       downloadLoading: false,
       dialogFormVisible: false,
       multipleSelection: [],
@@ -214,7 +216,6 @@ export default {
       })
     },
     handleCopy(item, event) {
-      // console.log(text)
       const info = '提货网址: ' + item.qr_code_link + '\n卡号: ' + item.code + '\n卡密: ' + item.password
       clip(info, event)
     },

@@ -95,6 +95,12 @@ export default {
     },
     submitForm() {
       this.$refs.postForm.validate(valid => {
+        if (this.postForm.description === null) {
+          this.$message({
+            message: '商品描述不可为空!',
+            type: 'warning'
+          })
+        }
         if (valid) {
           if (this.isEdit) {
             updateProduct(this.postForm.id, this.postForm).then(response => {
