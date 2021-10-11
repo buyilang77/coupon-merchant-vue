@@ -15,11 +15,6 @@
 
     <el-table :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" />
-      <el-table-column v-if="type === 'shipped'" label="物流单号" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.tracking_number }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="所属活动" align="center">
         <template slot-scope="{row}">
           <span :title="row.title">{{ row.title }}</span>
@@ -53,6 +48,11 @@
       <el-table-column label="收货地址" align="center">
         <template slot-scope="{row}">
           <span>{{ formatRegion(row.region) }} {{ row.address }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column v-if="type === 'shipped'" label="物流单号" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.tracking_number }}</span>
         </template>
       </el-table-column>
       <el-table-column label="当前状态" class-name="status-col" width="100">
