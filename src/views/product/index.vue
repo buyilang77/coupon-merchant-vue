@@ -20,6 +20,16 @@
           <span :title="row.name">{{ row.name }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="商品价格" align="center" width="100">
+        <template slot-scope="{row}">
+          <span :title="row.price">{{ row.price }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="商品图片" align="center" width="95">
+        <template slot-scope="{row}">
+          <img :src="row.carousel[0] && row.carousel[0].url" alt="" style="width: 60px">
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" width="240" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="redirectToProductEdit(row.id)">

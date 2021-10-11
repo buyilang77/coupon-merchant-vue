@@ -169,6 +169,24 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/shop-order',
+    component: Layout,
+    redirect: '/shop-order/index',
+    name: '购卡订单',
+    meta: {
+      title: '购卡订单',
+      icon: 'list'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/shopOrder/index'),
+        name: 'ShopOrder',
+        meta: { title: '购卡订单' }
+      }
+    ]
+  },
+  {
     path: '/order',
     component: Layout,
     redirect: '/order/index',

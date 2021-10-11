@@ -35,11 +35,6 @@
         <el-form-item label="活动说明">
           <el-input v-model="postForm.activity_description" type="textarea" />
         </el-form-item>
-        <el-form-item label="兑换码默认状态">
-          <el-radio-group v-model="postForm.status" class="filter-item">
-            <el-radio v-for="(item, index) in statusOptions" :key="index" :label="index"> {{ item }} </el-radio>
-          </el-radio-group>
-        </el-form-item>
         <el-divider />
         <div class="text-center">
           <el-button v-loading="loading" style="margin-left: 10px;" @click="submitForm">提交</el-button>

@@ -19,6 +19,20 @@ export function fetchList(query) {
   })
 }
 
+export function fetchShopOrderList(query) {
+  return request({
+    url: '/shop-orders',
+    method: 'get',
+    params: {
+      page: query.page,
+      limit: query.limit
+    },
+    paramsSerializer: params => {
+      return qs.stringify(params, { indices: true })
+    }
+  })
+}
+
 export function updateOrder(id, data) {
   return request({
     url: '/orders/' + id,
