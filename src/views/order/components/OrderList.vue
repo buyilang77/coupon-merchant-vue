@@ -15,6 +15,11 @@
 
     <el-table :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" />
+      <el-table-column v-if="type === 'shipped'" label="物流单号" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.tracking_number }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="所属活动" align="center">
         <template slot-scope="{row}">
           <span :title="row.title">{{ row.title }}</span>
@@ -193,6 +198,7 @@ export default {
     }
   },
   created() {
+    console.log(this.type)
     switch (this.type) {
       case 'shipped':
         this.listQuery.status = 1
