@@ -11,14 +11,17 @@
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         导出
       </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-circle-check" @click="bulkUpdateStatus(1)">
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-circle-check" @click="bulkUpdateStatus(1)">
         开启
       </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-circle-close" @click="bulkUpdateStatus(0)">
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-circle-close" @click="bulkUpdateStatus(0)">
         关闭
       </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="success" icon="el-icon-circle-plus-outline" @click="dialogFormVisible = true">
+      <el-button v-waves class="filter-item" type="success" icon="el-icon-circle-plus-outline" @click="dialogFormVisible = true">
         生成卡密
+      </el-button>
+      <el-button v-waves class="filter-item" type="success" icon="el-icon-circle-plus-outline" @click="handleUpload">
+        导入卡密
       </el-button>
     </div>
 
@@ -99,12 +102,23 @@
         <el-button type="primary" @click="submitForm">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="导入卡密" width="30%" :visible.sync="importDialogFormVisible">
+      <el-upload
+        action=""
+        :http-request="handleFile"
+        accept=".xlsx"
+        class="text-center"
+      >
+        <el-button slot="trigger" size="small" type="primary">点击上传</el-button>
+      </el-upload>
+    </el-dialog>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
 
 <script>
 import { fetchList, updateItem, bulkUpdateItem } from '@/api/coupon_item'
+import { uploadCouponItem } from '@/api/upload'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination'
 import { fetchCoupon, updateCoupon } from '@/api/coupon' // Secondary package based on el-pagination
@@ -177,6 +191,7 @@ export default {
       statusOptions: ['未开启', '已开启'],
       downloadLoading: false,
       dialogFormVisible: false,
+      importDialogFormVisible: false,
       multipleSelection: [],
       couponForm: Object.assign({}, defaultCouponForm),
       rules: {
@@ -274,6 +289,7 @@ export default {
     getCoupon() {
       fetchCoupon(this.id).then(response => {
         this.couponForm = response.data
+        this.couponForm.status = 1
       })
     },
     submitForm() {
@@ -295,6 +311,18 @@ export default {
           console.log('error submit!!')
           return false
         }
+      })
+    },
+    handleUpload() {
+      this.importDialogFormVisible = true
+    },
+    handleFile(file) {
+      const formData = new FormData()
+      formData.set('file', file.file)
+      uploadCouponItem(this.id, formData).then(response => {
+        this.importDialogFormVisible = false
+        this.$message.success('导入成功!')
+        this.getList()
       })
     }
   }
