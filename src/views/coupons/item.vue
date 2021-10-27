@@ -117,8 +117,9 @@
 </template>
 
 <script>
-import { fetchList, updateItem, bulkUpdateItem } from '@/api/coupon_item'
+import { fetchList, updateItem, bulkUpdateItem, exportItem } from '@/api/coupon_item'
 import { uploadCouponItem } from '@/api/upload'
+import fileDownload from 'js-file-download'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination'
 import { fetchCoupon, updateCoupon } from '@/api/coupon' // Secondary package based on el-pagination
@@ -260,15 +261,8 @@ export default {
     },
     handleDownload() {
       this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['兑换码', '密码', '领取链接', '开启状态', '兑换状态']
-        const filterVal = ['code', 'password', 'qr_code_link', 'open_status_text', 'redemption_status_text']
-        const data = this.formatItem(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '兑换码列表'
-        })
+      exportItem(this.id).then(res => {
+        fileDownload(res, 'CouponItem.xlsx')
         this.downloadLoading = false
       })
     },

@@ -7,7 +7,7 @@ export function getAccessToken() {
 }
 
 export function setAccessToken(token) {
-  return Cookies.set(TokenKey, token)
+  return Cookies.set(TokenKey, token, { expires: 15 })
 }
 
 export function removeToken() {

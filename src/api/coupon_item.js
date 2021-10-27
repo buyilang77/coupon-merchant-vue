@@ -26,6 +26,13 @@ export function updateItem(id, data) {
     data
   })
 }
+export function exportItem(id) {
+  return request({
+    url: `/export/${id}/item`,
+    method: 'get',
+    responseType: 'blob'
+  })
+}
 
 export function bulkUpdateItem(data) {
   return request({
