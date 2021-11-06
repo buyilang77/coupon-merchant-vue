@@ -1,39 +1,41 @@
 <template>
   <div class="createPost-container">
     <div class="createPost-main-container">
-      <el-form ref="postForm" :rules="rules" :model="postForm" label-position="left" label-width="110px" style="width: 500px; margin-left:50px;">
-        <el-form-item label="活动标题" prop="title">
-          <el-input v-model="postForm.title" />
-        </el-form-item>
-        <el-form-item label="活动日期" required>
-          <el-col :span="11">
-            <el-form-item prop="start_time">
-              <el-date-picker v-model="postForm.start_time" type="date" value-format="yyyy-MM-dd" placeholder="开始日期" style="width: 100%;" />
-            </el-form-item>
-          </el-col>
-          <el-col class="text-center" :span="2">-</el-col>
-          <el-col :span="11">
-            <el-form-item prop="end_time">
-              <el-date-picker v-model="postForm.end_time" type="date" value-format="yyyy-MM-dd" placeholder="结束日期" style="width: 100%;" />
-            </el-form-item>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="选择商品" prop="products">
-          <el-select v-model="postForm.products" multiple class="filter-item width-100">
-            <el-option v-for="(item, index) in product_list" :key="index" :label="item.name" :value="item.id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="卡券售价">
-          <el-input v-model="postForm.price" />
-        </el-form-item>
-        <el-form-item label="卡券面值">
-          <el-input v-model="postForm.original_price" />
-        </el-form-item>
-        <el-form-item label="客服电话">
-          <el-input v-model="postForm.services_phone" />
-        </el-form-item>
-        <el-form-item label="活动说明">
-          <el-input v-model="postForm.activity_description" type="textarea" />
+      <el-form ref="postForm" :rules="rules" :model="postForm" label-position="left" label-width="110px">
+        <div class="container">
+          <el-form-item label="活动标题" prop="title">
+            <el-input v-model="postForm.title" />
+          </el-form-item>
+          <el-form-item label="活动日期" required>
+            <el-col :span="11">
+              <el-form-item prop="start_time">
+                <el-date-picker v-model="postForm.start_time" type="date" value-format="yyyy-MM-dd" placeholder="开始日期" style="width: 100%;" />
+              </el-form-item>
+            </el-col>
+            <el-col class="text-center" :span="2">-</el-col>
+            <el-col :span="11">
+              <el-form-item prop="end_time">
+                <el-date-picker v-model="postForm.end_time" type="date" value-format="yyyy-MM-dd" placeholder="结束日期" style="width: 100%;" />
+              </el-form-item>
+            </el-col>
+          </el-form-item>
+          <el-form-item label="选择商品" prop="products">
+            <el-select v-model="postForm.products" multiple class="filter-item width-100">
+              <el-option v-for="(item, index) in product_list" :key="index" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="卡券售价">
+            <el-input v-model="postForm.price" />
+          </el-form-item>
+          <el-form-item label="卡券面值">
+            <el-input v-model="postForm.original_price" />
+          </el-form-item>
+          <el-form-item label="客服电话">
+            <el-input v-model="postForm.services_phone" />
+          </el-form-item>
+        </div>
+        <el-form-item label="活动说明" prop="description">
+          <Tinymce ref="editor" v-model="postForm.activity_description" :height="400" />
         </el-form-item>
         <el-divider />
         <div class="text-center">
@@ -47,6 +49,7 @@
 <script>
 import { fetchActivity, updateActivity, createActivity } from '@/api/activity'
 import { fetchList as productList } from '@/api/product'
+import Tinymce from '@/components/Tinymce'
 
 const defaultForm = {
   id: undefined,
@@ -67,6 +70,7 @@ const defaultForm = {
 
 export default {
   name: 'ActivityForm',
+  components: { Tinymce },
   props: {
     isEdit: {
       type: Boolean,
@@ -168,7 +172,10 @@ export default {
       width: 40px;
       position: absolute;
       right: 10px;
-      top: 0px;
+      top: 0;
+    }
+    .container {
+      width: 500px;
     }
   }
 
@@ -177,7 +184,7 @@ export default {
       padding-right: 40px;
       resize: none;
       border: none;
-      border-radius: 0px;
+      border-radius: 0;
       border-bottom: 1px solid #bfcbd9;
     }
   }
