@@ -217,6 +217,24 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/store',
+    component: Layout,
+    redirect: '/store/index',
+    name: '门店管理',
+    meta: {
+      title: '门店管理',
+      icon: 'el-icon-s-help'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/store/index'),
+        name: 'Store',
+        meta: { title: '门店列表', icon: 'list' }
+      }
+    ]
+  },
+  {
     path: '/profile',
     component: Layout,
     redirect: '/profile/index',
