@@ -169,6 +169,44 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/recharge-card',
+    component: Layout,
+    redirect: '/recharge-card/index',
+    name: '储值卡管理',
+    meta: {
+      title: '储值卡管理',
+      icon: 'shopping'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/recharge-card/index'),
+        name: 'RechargeCardIndex',
+        meta: { title: '列表', icon: 'list', noCache: true }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/recharge-card/create'),
+        name: 'RechargeCardCreate',
+        meta: { title: '添加', icon: 'edit' }
+      },
+      {
+        path: 'item/:id(\\d+)',
+        component: () => import('@/views/recharge-card/item'),
+        name: 'RechargeCardItems',
+        meta: { title: '查看兑换码', noCache: true, activeMenu: '/recharge-card/index' },
+        hidden: true
+      },
+      {
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/recharge-card/edit'),
+        name: 'RechargeCardEdit',
+        meta: { title: '编辑储值卡', activeMenu: '/recharge-card/index' },
+        hidden: true
+      }
+    ]
+  },
+  {
     path: '/shop-order',
     component: Layout,
     redirect: '/shop-order/index',
