@@ -26,11 +26,6 @@
           <span :title="row.original_price">{{ row.original_price }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="活动日期" width="200px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.start_time }} - {{ row.end_time }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="兑换商品" align="center">
         <template slot-scope="{row}">
           <el-tag v-for="(product, index) in row.products" :key="index">{{ productText(product) }}</el-tag>

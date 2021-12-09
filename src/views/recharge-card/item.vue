@@ -8,7 +8,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
+      <el-button v-if="false" v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         导出
       </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-circle-check" @click="bulkUpdateStatus(1)">
@@ -16,6 +16,12 @@
       </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-circle-close" @click="bulkUpdateStatus(0)">
         关闭
+      </el-button>
+      <el-button v-waves class="filter-item" type="success" icon="el-icon-circle-plus-outline" @click="dialogFormVisible = true">
+        生成卡密
+      </el-button>
+      <el-button v-if="false" v-waves class="filter-item" type="success" icon="el-icon-circle-plus-outline" @click="handleUpload">
+        导入卡密
       </el-button>
     </div>
 
@@ -26,24 +32,30 @@
           <span>{{ row.code }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column min-width="300px" label="密码">
+      <el-table-column min-width="300px" label="密码" align="center">
         <template slot-scope="{row}">
           <span>{{ row.password }}</span>
         </template>
       </el-table-column>
-
+      <el-table-column width="160px" label="可用余额" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.balance }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="160px" label="购卡会员" align="center">
+        <template>
+          <span />
+        </template>
+      </el-table-column>
+      <el-table-column width="160px" label="绑定时间" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.payment_at }}</span>
+        </template>
+      </el-table-column>
       <el-table-column class-name="status-col" label="开启状态" width="110">
         <template slot-scope="{row}">
           <el-tag :type="row.open_status | openStatusType">
             {{ row.open_status | openStatusFilter }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="兑换状态" width="110">
-        <template slot-scope="{row}">
-          <el-tag :type="row.redemption_status | redemptionStatusType">
-            {{ row.redemption_status | redemptionStatusFilter }}
           </el-tag>
         </template>
       </el-table-column>
@@ -54,21 +66,67 @@
             开启
           </el-button>
           <el-button v-if="row.open_status === 1" type="info" size="mini" @click="handleModifyStatus(row, 0)">
-            关闭
+            冻结
           </el-button>
         </template>
       </el-table-column>
     </el-table>
-
+    <el-dialog title="卡密管理" width="30%" :visible.sync="dialogFormVisible">
+      <el-form ref="couponForm" :rules="rules" :model="couponForm" label-position="left" label-width="110px" style="width: 80%; margin-left:50px;">
+        <el-form-item label="卡券前缀">
+          <el-input v-model="couponForm.prefix" />
+        </el-form-item>
+        <el-form-item label="起始编号" prop="start_number">
+          <el-input-number v-model="couponForm.start_number" width="300px" :min="1" :max="10000000000000000" />
+        </el-form-item>
+        <el-form-item label="卡券数量" prop="quantity">
+          <el-input-number v-model="couponForm.quantity" :min="1" :max="100000" />
+        </el-form-item>
+        <el-form-item label="编码长度" prop="length">
+          <el-input-number v-model="couponForm.length" :min="4" :max="12" />
+          <div>
+            <small class="length-hint">编码长度必须介于 4 - 12 之间</small>
+          </div>
+        </el-form-item>
+        <el-form-item label="卡密默认状态">
+          <el-radio-group v-model="couponForm.status" class="filter-item">
+            <el-radio v-for="(item, index) in statusOptions" :key="index" :label="index"> {{ item }} </el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="导入卡密" width="30%" :visible.sync="importDialogFormVisible">
+      <el-upload
+        action=""
+        :http-request="handleFile"
+        accept=".xlsx"
+        class="text-center"
+      >
+        <el-button slot="trigger" size="small" type="primary">点击上传</el-button>
+      </el-upload>
+    </el-dialog>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
 
 <script>
-import { fetchList, updateItem, bulkUpdateItem } from '@/api/recharge-card-item'
+import { fetchList, createItem, updateItemStatus, bulkUpdateItem } from '@/api/recharge-card-item'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-
+import Pagination from '@/components/Pagination'
+import { uploadCouponItem } from '@/api/upload'
+import { exportItem } from '@/api/coupon_item'
+import fileDownload from 'js-file-download' // Secondary package based on el-pagination
+const defaultCouponForm = {
+  prefix: null,
+  start_number: null,
+  quantity: 10,
+  length: null,
+  status: 1
+}
 export default {
   name: 'RechargeCardItems',
   components: { Pagination },
@@ -109,6 +167,11 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
+      couponForm: Object.assign({}, defaultCouponForm),
+      rules: {
+        title: [{ required: true, message: '标题不可为空!', trigger: 'blur' }],
+        products: [{ required: true, message: '商品不可为空!', trigger: 'blur' }]
+      },
       listQuery: {
         page: 1,
         limit: 20,
@@ -116,14 +179,13 @@ export default {
         open_status: undefined,
         redemption_status: undefined
       },
+      dialogFormVisible: false,
+      importDialogFormVisible: false,
       updateItemParameters: {
         open_status: undefined,
         items: undefined
       },
-      statusOptions: {
-        0: '未开启',
-        1: '已开启'
-      },
+      statusOptions: ['未开启', '已开启'],
       downloadLoading: false,
       multipleSelection: []
     }
@@ -147,7 +209,7 @@ export default {
     },
     handleModifyStatus(row, status) {
       this.updateItemParameters.open_status = status
-      updateItem(row.id, this.updateItemParameters).then(response => {
+      updateItemStatus(row.id, this.updateItemParameters).then(response => {
         row.open_status = status
         this.$message({
           message: response.message,
@@ -181,15 +243,8 @@ export default {
     },
     handleDownload() {
       this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['兑换码', '密码', '领取链接', '开启状态', '兑换状态']
-        const filterVal = ['code', 'password', 'qr_code_link', 'open_status_text', 'redemption_status_text']
-        const data = this.formatItem(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '兑换码列表'
-        })
+      exportItem(this.id).then(res => {
+        fileDownload(res, 'RechargeCardItems.xlsx')
         this.downloadLoading = false
       })
     },
@@ -206,6 +261,39 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
+    },
+    handleUpload() {
+      this.importDialogFormVisible = true
+    },
+    submitForm() {
+      this.$refs.couponForm.validate(valid => {
+        if (valid) {
+          createItem(this.id, this.couponForm).then(response => {
+            this.loading = true
+            this.$notify({
+              title: '成功',
+              message: response.message,
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+            this.dialogFormVisible = false
+          })
+          this.$router.push({ name: 'RechargeCardItems', params: { id: this.id }})
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    handleFile(file) {
+      const formData = new FormData()
+      formData.set('file', file.file)
+      uploadCouponItem(this.id, formData).then(response => {
+        this.importDialogFormVisible = false
+        this.$message.success('导入成功!')
+        this.getList()
+      })
     }
   }
 }

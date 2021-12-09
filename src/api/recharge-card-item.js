@@ -18,17 +18,23 @@ export function fetchList(id, query) {
     }
   })
 }
-
-export function updateItem(id, data) {
+export function updateItemStatus(id, data) {
   return request({
     url: '/recharge-card/items/' + id,
     method: 'patch',
     data
   })
 }
+export function createItem(id, data) {
+  return request({
+    url: '/recharge-card/' + id + '/items',
+    method: 'post',
+    data
+  })
+}
 export function exportItem(id) {
   return request({
-    url: `/export/${id}/item`,
+    url: `/export/recharge-card/${id}`,
     method: 'get',
     responseType: 'blob'
   })
