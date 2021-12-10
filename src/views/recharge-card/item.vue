@@ -117,7 +117,6 @@
 import { fetchList, createItem, updateItemStatus, bulkUpdateItem } from '@/api/recharge-card-item'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination'
-import { uploadCouponItem } from '@/api/upload'
 import { exportItem } from '@/api/coupon_item'
 import fileDownload from 'js-file-download' // Secondary package based on el-pagination
 const defaultCouponForm = {
@@ -289,11 +288,11 @@ export default {
     handleFile(file) {
       const formData = new FormData()
       formData.set('file', file.file)
-      uploadCouponItem(this.id, formData).then(response => {
-        this.importDialogFormVisible = false
-        this.$message.success('导入成功!')
-        this.getList()
-      })
+      // uploadCouponItem(this.id, formData).then(response => {
+      //   this.importDialogFormVisible = false
+      //   this.$message.success('导入成功!')
+      //   this.getList()
+      // })
     }
   }
 }

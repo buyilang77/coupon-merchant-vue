@@ -33,6 +33,21 @@ export function exportItem(id) {
     responseType: 'blob'
   })
 }
+export function importCouponItem(coupon_id, data) {
+  return request({
+    url: `/import/${coupon_id}/item`,
+    method: 'post',
+    data
+  })
+}
+
+export function importCouponItemTemplate() {
+  return request({
+    url: `/import/template`,
+    method: 'get',
+    responseType: 'blob'
+  })
+}
 
 export function bulkUpdateItem(data) {
   return request({

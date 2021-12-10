@@ -7,10 +7,3 @@ export function image(data) {
     data
   })
 }
-export function uploadCouponItem(coupon_id, data) {
-  return request({
-    url: `/import/${coupon_id}/item`,
-    method: 'post',
-    data
-  })
-}

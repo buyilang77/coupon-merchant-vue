@@ -109,7 +109,7 @@ export const constantRoutes = [
     redirect: '/activity/index',
     name: 'Activity',
     meta: {
-      title: '卡券管理',
+      title: '提货卡管理',
       icon: 'shopping'
     },
     children: [
@@ -117,13 +117,13 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/activity/index'),
         name: 'ActivityIndex',
-        meta: { title: '卡券列表', icon: 'list', noCache: true }
+        meta: { title: '提货卡列表', icon: 'list', noCache: true }
       },
       {
         path: 'create',
         component: () => import('@/views/activity/create'),
         name: 'ActivityCreate',
-        meta: { title: '添加卡券', icon: 'edit' }
+        meta: { title: '添加', icon: 'edit' }
       },
       {
         path: 'edit/:id(\\d+)',
@@ -138,10 +138,10 @@ export const constantRoutes = [
     path: '/coupons',
     component: Layout,
     redirect: '/coupons/index',
-    name: '卡券管理',
+    name: '提货卡管理',
     hidden: true,
     meta: {
-      title: '卡券管理',
+      title: '提货卡管理',
       icon: 'shopping'
     },
     children: [
@@ -182,7 +182,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/recharge-card/index'),
         name: 'RechargeCardIndex',
-        meta: { title: '列表', icon: 'list', noCache: true }
+        meta: { title: '储值卡列表', icon: 'list', noCache: true }
       },
       {
         path: 'create',

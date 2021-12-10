@@ -103,22 +103,27 @@
       </div>
     </el-dialog>
     <el-dialog title="导入卡密" width="30%" :visible.sync="importDialogFormVisible">
-      <el-upload
-        action=""
-        :http-request="handleFile"
-        accept=".xlsx"
-        class="text-center"
-      >
-        <el-button slot="trigger" size="small" type="primary">点击上传</el-button>
-      </el-upload>
+      <div class="import-container">
+        <div>
+          <el-button slot="trigger" size="small" type="info" @click="handleDownloadTemplate">下载模板</el-button>
+        </div>
+        <div>
+          <el-upload
+            action=""
+            :http-request="handleFile"
+            accept=".xlsx"
+          >
+            <el-button slot="trigger" size="small" type="primary">点击上传</el-button>
+          </el-upload>
+        </div>
+      </div>
     </el-dialog>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
 
 <script>
-import { fetchList, updateItem, bulkUpdateItem, exportItem } from '@/api/coupon_item'
-import { uploadCouponItem } from '@/api/upload'
+import { fetchList, updateItem, bulkUpdateItem, exportItem, importCouponItem, importCouponItemTemplate } from '@/api/coupon_item'
 import fileDownload from 'js-file-download'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination'
@@ -197,9 +202,7 @@ export default {
       couponForm: Object.assign({}, defaultCouponForm),
       rules: {
         title: [{ required: true, message: '标题不可为空!', trigger: 'blur' }],
-        products: [{ required: true, message: '商品不可为空!', trigger: 'blur' }],
-        start_time: [{ required: true, message: '活动日期不可为空!', trigger: 'change' }],
-        end_time: [{ required: true, message: '活动日期不可为空!', trigger: 'change' }]
+        products: [{ required: true, message: '商品不可为空!', trigger: 'blur' }]
       }
     }
   },
@@ -266,6 +269,13 @@ export default {
         this.downloadLoading = false
       })
     },
+    handleDownloadTemplate() {
+      this.downloadLoading = true
+      importCouponItemTemplate().then(res => {
+        fileDownload(res, 'CouponItemTemplate.xlsx')
+        this.downloadLoading = false
+      })
+    },
     formatItem(filterVal) {
       if (this.multipleSelection.length > 0) {
         return this.multipleSelection.map(v => filterVal.map(j => {
@@ -313,7 +323,7 @@ export default {
     handleFile(file) {
       const formData = new FormData()
       formData.set('file', file.file)
-      uploadCouponItem(this.id, formData).then(response => {
+      importCouponItem(this.id, formData).then(response => {
         this.importDialogFormVisible = false
         this.$message.success('导入成功!')
         this.getList()
@@ -322,3 +332,12 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.import-container {
+  display: flex;
+  justify-content: center;
+  div {
+    margin: 0 5px;
+  }
+}
+</style>
