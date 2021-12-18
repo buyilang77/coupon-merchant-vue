@@ -35,12 +35,11 @@ export function exportItem(id) {
 }
 export function importCouponItem(coupon_id, data) {
   return request({
-    url: `/import/${coupon_id}/item`,
+    url: `/import/coupon/${coupon_id}/item`,
     method: 'post',
     data
   })
 }
-
 export function importCouponItemTemplate() {
   return request({
     url: `/import/template`,

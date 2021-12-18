@@ -32,6 +32,13 @@ export function createItem(id, data) {
     data
   })
 }
+export function importRechargeCard(coupon_id, data) {
+  return request({
+    url: `/import/recharge-card/${coupon_id}/item`,
+    method: 'post',
+    data
+  })
+}
 export function exportItem(id) {
   return request({
     url: `/export/recharge-card/${id}`,
@@ -39,7 +46,13 @@ export function exportItem(id) {
     responseType: 'blob'
   })
 }
-
+export function importRechargeCardTemplate() {
+  return request({
+    url: `/import/template/recharge-card`,
+    method: 'get',
+    responseType: 'blob'
+  })
+}
 export function bulkUpdateItem(data) {
   return request({
     url: '/recharge-card/items/bulk-update',

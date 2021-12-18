@@ -8,19 +8,19 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button v-if="false" v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
+      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         导出
       </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-circle-check" @click="bulkUpdateStatus(1)">
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-circle-check" @click="bulkUpdateStatus(1)">
         开启
       </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-circle-close" @click="bulkUpdateStatus(0)">
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-circle-close" @click="bulkUpdateStatus(0)">
         关闭
       </el-button>
       <el-button v-waves class="filter-item" type="success" icon="el-icon-circle-plus-outline" @click="dialogFormVisible = true">
         生成卡密
       </el-button>
-      <el-button v-if="false" v-waves class="filter-item" type="success" icon="el-icon-circle-plus-outline" @click="handleUpload">
+      <el-button v-waves class="filter-item" type="success" icon="el-icon-circle-plus-outline" @click="handleUpload">
         导入卡密
       </el-button>
     </div>
@@ -100,25 +100,37 @@
       </div>
     </el-dialog>
     <el-dialog title="导入卡密" width="30%" :visible.sync="importDialogFormVisible">
-      <el-upload
-        action=""
-        :http-request="handleFile"
-        accept=".xlsx"
-        class="text-center"
-      >
-        <el-button slot="trigger" size="small" type="primary">点击上传</el-button>
-      </el-upload>
+      <div class="import-container">
+        <div>
+          <el-button slot="trigger" size="small" type="info" @click="handleDownloadTemplate">下载模板</el-button>
+        </div>
+        <div>
+          <el-upload
+            action=""
+            :http-request="handleFile"
+            accept=".xlsx"
+          >
+            <el-button slot="trigger" size="small" type="primary">点击上传</el-button>
+          </el-upload>
+        </div>
+      </div>
     </el-dialog>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
 
 <script>
-import { fetchList, createItem, updateItemStatus, bulkUpdateItem } from '@/api/recharge-card-item'
+import {
+  fetchList,
+  createItem,
+  updateItemStatus,
+  bulkUpdateItem,
+  exportItem,
+  importRechargeCardTemplate, importRechargeCard
+} from '@/api/recharge-card-item'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination'
-import { exportItem } from '@/api/coupon_item'
-import fileDownload from 'js-file-download' // Secondary package based on el-pagination
+import fileDownload from 'js-file-download'
 const defaultCouponForm = {
   prefix: null,
   start_number: null,
@@ -240,13 +252,6 @@ export default {
         })
       })
     },
-    handleDownload() {
-      this.downloadLoading = true
-      exportItem(this.id).then(res => {
-        fileDownload(res, 'RechargeCardItems.xlsx')
-        this.downloadLoading = false
-      })
-    },
     formatItem(filterVal) {
       if (this.multipleSelection.length > 0) {
         return this.multipleSelection.map(v => filterVal.map(j => {
@@ -285,15 +290,36 @@ export default {
         }
       })
     },
+    handleDownloadTemplate() {
+      importRechargeCardTemplate().then(res => {
+        fileDownload(res, 'RechargeCardTemplate.xlsx')
+      })
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      exportItem(this.id).then(res => {
+        fileDownload(res, 'RechargeCard.xlsx')
+        this.downloadLoading = false
+      })
+    },
     handleFile(file) {
       const formData = new FormData()
       formData.set('file', file.file)
-      // uploadCouponItem(this.id, formData).then(response => {
-      //   this.importDialogFormVisible = false
-      //   this.$message.success('导入成功!')
-      //   this.getList()
-      // })
+      importRechargeCard(this.id, formData).then(response => {
+        this.importDialogFormVisible = false
+        this.$message.success('导入成功!')
+        this.getList()
+      })
     }
   }
 }
 </script>
+<style lang="scss">
+.import-container {
+  display: flex;
+  justify-content: center;
+  div {
+    margin: 0 5px;
+  }
+}
+</style>
