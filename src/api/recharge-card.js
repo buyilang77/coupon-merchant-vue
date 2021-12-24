@@ -17,6 +17,23 @@ export function fetchList(query) {
     }
   })
 }
+export function fetchOrders(query) {
+  console.log(query)
+  return request({
+    url: '/recharge-card/orders',
+    method: 'get',
+    params: {
+      filter: {
+        order_num: query.order_num
+      },
+      page: query.page,
+      limit: query.limit
+    },
+    paramsSerializer: params => {
+      return qs.stringify(params, { indices: true })
+    }
+  })
+}
 
 export function createData(data) {
   return request({

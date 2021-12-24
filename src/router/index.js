@@ -207,6 +207,35 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/write-off',
+    component: Layout,
+    name: '卡券核销',
+    meta: {
+      title: '卡券核销',
+      icon: 'list'
+    },
+    children: [
+      {
+        path: 'recharge-card',
+        component: () => import('@/views/write-off/rechargeCard'),
+        name: 'RechargeCardOrder',
+        meta: { title: '储值卡' }
+      },
+      {
+        path: 'one-time-card',
+        component: () => import('@/views/write-off/multipleCard'),
+        name: 'OneTimeCardOrder',
+        meta: { title: '单次卡' }
+      },
+      {
+        path: 'multiple-card',
+        component: () => import('@/views/write-off/multipleCard'),
+        name: 'MultipleCardOrder',
+        meta: { title: '多次卡' }
+      }
+    ]
+  },
+  {
     path: '/shop-order',
     component: Layout,
     redirect: '/shop-order/index',
