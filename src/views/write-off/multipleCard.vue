@@ -6,7 +6,10 @@
 export default {
   name: 'MultipleCard',
   created() {
-    this.$message('该功能待完善!')
+    this.$message('该功能完善中!')
+    setTimeout(() => {
+      this.$router.back()
+    }, 500)
   }
 }
 </script>

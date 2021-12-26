@@ -18,7 +18,6 @@ export function fetchList(query) {
   })
 }
 export function fetchOrders(query) {
-  console.log(query)
   return request({
     url: '/recharge-card/orders',
     method: 'get',
@@ -32,6 +31,12 @@ export function fetchOrders(query) {
     paramsSerializer: params => {
       return qs.stringify(params, { indices: true })
     }
+  })
+}
+export function fetchOrder(id) {
+  return request({
+    url: '/recharge-card/orders/' + id,
+    method: 'get'
   })
 }
 
@@ -53,6 +58,13 @@ export function fetchData(id) {
 export function updateData(id, data) {
   return request({
     url: '/recharge-card/' + id,
+    method: 'put',
+    data
+  })
+}
+export function updateOrder(id, data) {
+  return request({
+    url: '/recharge-card/orders/' + id,
     method: 'put',
     data
   })
