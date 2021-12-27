@@ -24,6 +24,14 @@
               <el-form-item label="卡券面值" prop="denomination">
                 <el-input v-model="postForm.denomination" />
               </el-form-item>
+              <el-form-item label="配送设置" prop="delivery_type">
+                <el-checkbox-group
+                  v-model="postForm.delivery_type"
+                  :min="1"
+                >
+                  <el-checkbox v-for="delivery in deliveryTypes" :key="delivery" :label="delivery">{{ delivery | deliveryType }}</el-checkbox>
+                </el-checkbox-group>
+              </el-form-item>
             </div>
           </el-tab-pane>
           <el-tab-pane label="卡券介绍" name="second">
@@ -69,6 +77,7 @@ const defaultForm = {
   price: '0.00',
   denomination: '0.00',
   type: '2',
+  delivery_type: ['delivery'],
   is_online: 0,
   carousel: [],
   remark: null,
@@ -78,6 +87,15 @@ const defaultForm = {
 export default {
   name: 'CommonForm',
   components: { Tinymce },
+  filters: {
+    deliveryType(status) {
+      const statusMap = {
+        'delivery': '快递发货',
+        'pick_up': '门店自提'
+      }
+      return statusMap[status]
+    }
+  },
   props: {
     isEdit: {
       type: Boolean,
@@ -93,6 +111,10 @@ export default {
         1: '电子卡',
         2: '实物卡'
       },
+      deliveryTypes: [
+        'delivery',
+        'pick_up'
+      ],
       onlineOptions: ['线下销售', '在线销售'],
       rules: {
         name: [{ required: true, message: '名称不可为空!', trigger: 'blur' }],

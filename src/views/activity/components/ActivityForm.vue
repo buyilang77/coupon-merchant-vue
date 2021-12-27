@@ -6,6 +6,19 @@
           <el-form-item label="卡券名称" prop="title">
             <el-input v-model="postForm.title" />
           </el-form-item>
+          <el-form-item label="活动日期" required>
+            <el-col :span="11">
+              <el-form-item prop="start_time">
+                <el-date-picker v-model="postForm.start_time" type="date" value-format="yyyy-MM-dd" placeholder="开始日期" style="width: 100%;" />
+              </el-form-item>
+            </el-col>
+            <el-col class="text-center" :span="2">-</el-col>
+            <el-col :span="11">
+              <el-form-item prop="end_time">
+                <el-date-picker v-model="postForm.end_time" type="date" value-format="yyyy-MM-dd" placeholder="结束日期" style="width: 100%;" />
+              </el-form-item>
+            </el-col>
+          </el-form-item>
           <el-form-item label="选择商品" prop="products">
             <el-select v-model="postForm.products" multiple class="filter-item width-100">
               <el-option v-for="(item, index) in product_list" :key="index" :label="item.name" :value="item.id" />
@@ -19,6 +32,14 @@
           </el-form-item>
           <el-form-item label="客服电话">
             <el-input v-model="postForm.services_phone" />
+          </el-form-item>
+          <el-form-item label="配送设置" prop="delivery_type">
+            <el-checkbox-group
+              v-model="postForm.delivery_type"
+              :min="1"
+            >
+              <el-checkbox v-for="delivery in deliveryTypes" :key="delivery" :label="delivery">{{ delivery | deliveryType }}</el-checkbox>
+            </el-checkbox-group>
           </el-form-item>
         </div>
         <el-form-item label="活动说明" prop="description">
@@ -46,6 +67,9 @@ const defaultForm = {
   services_phone: null,
   activity_description: null,
   products: [],
+  start_time: null,
+  end_time: null,
+  delivery_type: ['delivery'],
   prefix: null,
   start_number: null,
   quantity: 500,
@@ -56,6 +80,15 @@ const defaultForm = {
 export default {
   name: 'ActivityForm',
   components: { Tinymce },
+  filters: {
+    deliveryType(status) {
+      const statusMap = {
+        'delivery': '快递发货',
+        'pick_up': '门店自提'
+      }
+      return statusMap[status]
+    }
+  },
   props: {
     isEdit: {
       type: Boolean,
@@ -67,6 +100,10 @@ export default {
       postForm: Object.assign({}, defaultForm),
       loading: false,
       product_list: [],
+      deliveryTypes: [
+        'delivery',
+        'pick_up'
+      ],
       statusOptions: ['未启用', '启用'],
       rules: {
         title: [{ required: true, message: '标题不可为空!', trigger: 'blur' }],
