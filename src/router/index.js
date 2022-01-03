@@ -209,9 +209,9 @@ export const constantRoutes = [
   {
     path: '/write-off',
     component: Layout,
-    name: '卡券核销',
+    name: '自提订单',
     meta: {
-      title: '卡券核销',
+      title: '自提订单',
       icon: 'list'
     },
     children: [
