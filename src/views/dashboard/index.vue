@@ -5,13 +5,13 @@
       <el-divider />
       <div class="container-box">
         <div class="container-box-left">
-          <qrcode-vue :value="link" class="ddd" size="120" level="H" />
+          <qrcode-vue :value="pick_up_link" class="ddd" size="120" level="H" />
         </div>
         <div class="container-box-right">
           <div class="info-box">
             <div class="info-box-item">
               <div class="info-box-item-title">网址:</div>
-              <div class="info-box-item-content"><el-link type="info" target="_blank">待更新</el-link></div>
+              <div class="info-box-item-content"><el-link :href="pick_up_link" type="info" target="_blank">{{ pick_up_link }}</el-link></div>
             </div>
             <div class="info-box-item">
               <div class="info-box-item-title">使用方法:</div>
@@ -59,11 +59,13 @@ export default {
   components: { QrcodeVue },
   data() {
     return {
-      link: ''
+      link: '',
+      pick_up_link: ''
     }
   },
   created() {
     this.link = `http://recharge-card.hipi5.com/${this.$store.state.user.username}`
+    this.pick_up_link = `http://h5.hipi5.com/#/${this.$store.state.user.username}`
   }
 }
 </script>
