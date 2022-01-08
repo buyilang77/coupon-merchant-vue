@@ -72,7 +72,6 @@ const actions = {
       getInfo(state.access_token).then(response => {
         const { data } = response
         data.roles = ['admin']
-        data.avatar = require('@/assets/avatars/phper.png')
         const { roles, username, surname, merchant_name, phone, region, avatar } = data
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
