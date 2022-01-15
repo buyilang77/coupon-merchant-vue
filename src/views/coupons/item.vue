@@ -41,7 +41,7 @@
 
       <el-table-column width="110px" align="center" label="生成提货信息">
         <template slot-scope="{row}">
-          <el-button size="mini" @click="handleCopy(row, $event)">
+          <el-button size="mini" @click="handleCopy(row)">
             生成
           </el-button>
         </template>
@@ -118,17 +118,35 @@
         </div>
       </div>
     </el-dialog>
+
+    <el-dialog title="选择电子卡模板" width="30%" :visible.sync="selectTemplateDialogFormVisible">
+      <div class="import-container">
+        <el-select v-model="electronicCardTemplateId" placeholder="请选择">
+          <el-option
+            v-for="(item, index) in electronicCardTemplates"
+            :key="index"
+            :label="item.from"
+            :value="item.id"
+          />
+        </el-select>
+        <el-button slot="trigger" size="small" type="primary" @click="handleSelectTemplate(electronicCardTemplateUrl, $event)">立即生成</el-button>
+      </div>
+      <div v-if="electronicCardTemplateUrl" class="import-container electronic-card">
+        <el-link :href="electronicCardTemplateUrl" type="info" target="_blank">{{ electronicCardTemplateUrl }}</el-link>
+      </div>
+    </el-dialog>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
 
 <script>
 import { fetchList, updateItem, bulkUpdateItem, exportItem, importCouponItem, importCouponItemTemplate } from '@/api/coupon_item'
+import { fetchList as fetchTemplateList } from '@/api/electronic-card-template'
+
 import fileDownload from 'js-file-download'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination'
 import { fetchCoupon, updateCoupon } from '@/api/coupon' // Secondary package based on el-pagination
-import clip from '@/utils/clipboard' // use clipboard directly
 const defaultCouponForm = {
   id: undefined,
   services_phone: null,
@@ -198,7 +216,12 @@ export default {
       downloadLoading: false,
       dialogFormVisible: false,
       importDialogFormVisible: false,
+      selectTemplateDialogFormVisible: false,
       multipleSelection: [],
+      temporaryRow: {},
+      electronicCardTemplateUrl: '',
+      electronicCardTemplateId: '',
+      electronicCardTemplates: [],
       couponForm: Object.assign({}, defaultCouponForm),
       rules: {
         title: [{ required: true, message: '标题不可为空!', trigger: 'blur' }],
@@ -234,9 +257,18 @@ export default {
         })
       })
     },
-    handleCopy(item, event) {
-      const info = '提货网址: ' + item.qr_code_link + '\n卡号: ' + item.code + '\n卡密: ' + item.password
-      clip(info, event)
+    handleCopy(row) {
+      // const info = '提货网址: ' + item.qr_code_link + '\n卡号: ' + item.code + '\n卡密: ' + item.password
+      this.electronicCardTemplateId = ''
+      this.electronicCardTemplateUrl = ''
+      this.temporaryRow = row
+      this.selectTemplateDialogFormVisible = true
+      fetchTemplateList({
+        page: 1,
+        limit: 20
+      }).then(res => {
+        this.electronicCardTemplates = res.data.data
+      })
     },
     bulkUpdateStatus(status) {
       const multipleSelection = this.multipleSelection
@@ -274,6 +306,17 @@ export default {
       importCouponItemTemplate().then(res => {
         fileDownload(res, 'CouponItemTemplate.xlsx')
         this.downloadLoading = false
+      })
+    },
+    handleSelectTemplate() {
+      updateItem(this.temporaryRow.id, {
+        electronic_card_template_id: this.electronicCardTemplateId
+      }).then(response => {
+        this.electronicCardTemplateUrl = `http://h5.hipi5.com/#/coupons/${this.couponForm.id}/electronic-card?card_num=${this.temporaryRow.code}&password=${this.temporaryRow.password}`
+        this.$message({
+          message: response.message,
+          type: 'success'
+        })
       })
     },
     formatItem(filterVal) {
@@ -339,5 +382,8 @@ export default {
   div {
     margin: 0 5px;
   }
+}
+.electronic-card {
+  margin-top: 10px;
 }
 </style>

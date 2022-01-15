@@ -207,6 +207,24 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/electronic-card-template',
+    component: Layout,
+    redirect: '/electronic-card-template/index',
+    name: 'ElectronicCardTemplate',
+    meta: {
+      title: '电子卡模板',
+      icon: 'shopping'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/electronic-card-template/index'),
+        name: 'ElectronicCardTemplateIndex',
+        meta: { title: '电子卡模板', icon: 'list', noCache: true }
+      }
+    ]
+  },
+  {
     path: '/write-off',
     component: Layout,
     name: '自提订单',
@@ -225,13 +243,7 @@ export const constantRoutes = [
         path: 'one-time-card',
         component: () => import('@/views/write-off/multipleCard'),
         name: 'OneTimeCardOrder',
-        meta: { title: '单次卡' }
-      },
-      {
-        path: 'multiple-card',
-        component: () => import('@/views/write-off/multipleCard'),
-        name: 'MultipleCardOrder',
-        meta: { title: '多次卡' }
+        meta: { title: '提货卡' }
       }
     ]
   },

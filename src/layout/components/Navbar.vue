@@ -15,7 +15,7 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar ? avatar : require('@/assets/avatars/default_avatar.jpg')" class="user-avatar">
+          <img :src="avatar ? avatar : require('@/assets/avatars/default_avatar.jpg')" class="user-avatar" alt="">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
