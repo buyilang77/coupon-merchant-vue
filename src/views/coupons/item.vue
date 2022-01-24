@@ -33,12 +33,21 @@
         </template>
       </el-table-column>
 
-      <el-table-column min-width="300px" label="密码">
+      <el-table-column align="center" label="密码">
         <template slot-scope="{row}">
           <span>{{ row.password }}</span>
         </template>
       </el-table-column>
-
+      <el-table-column align="center" min-width="150px" label="电子卡">
+        <template slot-scope="{row}">
+          <span>{{ row.electronic_card_template && row.electronic_card_template.name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" min-width="150px" label="备注">
+        <template slot-scope="{row}">
+          <span v-if="row.remark" style="margin-right: 10px">{{ row.remark }}</span><el-button icon="el-icon-edit-outline" size="mini" @click="handleRemark(row)" />
+        </template>
+      </el-table-column>
       <el-table-column width="110px" align="center" label="生成提货信息">
         <template slot-scope="{row}">
           <el-button size="mini" @click="handleCopy(row)">
@@ -125,7 +134,7 @@
           <el-option
             v-for="(item, index) in electronicCardTemplates"
             :key="index"
-            :label="item.from"
+            :label="item.name"
             :value="item.id"
           />
         </el-select>
@@ -134,6 +143,10 @@
       <div v-if="electronicCardTemplateUrl" class="import-container electronic-card">
         <el-link :href="electronicCardTemplateUrl" type="info" target="_blank">{{ electronicCardTemplateUrl }}</el-link>
       </div>
+    </el-dialog>
+    <el-dialog title="填写备注信息" width="30%" :visible.sync="remarkDialogFormVisible">
+      <el-input v-model="remark" type="textarea" placeholder="请输入备注" />
+      <div class="text-center" style="margin-top: 10px"><el-button slot="trigger" size="small" type="primary" @click="submitRemark()">保存</el-button></div>
     </el-dialog>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
@@ -201,6 +214,7 @@ export default {
       total: 0,
       listLoading: true,
       loading: false,
+      remark: '',
       listQuery: {
         page: 1,
         limit: 20,
@@ -216,6 +230,7 @@ export default {
       downloadLoading: false,
       dialogFormVisible: false,
       importDialogFormVisible: false,
+      remarkDialogFormVisible: false,
       selectTemplateDialogFormVisible: false,
       multipleSelection: [],
       temporaryRow: {},
@@ -258,7 +273,6 @@ export default {
       })
     },
     handleCopy(row) {
-      // const info = '提货网址: ' + item.qr_code_link + '\n卡号: ' + item.code + '\n卡密: ' + item.password
       this.electronicCardTemplateId = ''
       this.electronicCardTemplateUrl = ''
       this.temporaryRow = row
@@ -313,6 +327,25 @@ export default {
         electronic_card_template_id: this.electronicCardTemplateId
       }).then(response => {
         this.electronicCardTemplateUrl = `http://h5.hipi5.com/#/coupons/${this.couponForm.id}/electronic-card?card_num=${this.temporaryRow.code}&password=${this.temporaryRow.password}`
+        this.$message({
+          message: response.message,
+          type: 'success'
+        })
+      })
+    },
+    handleRemark(row) {
+      this.electronicCardTemplateId = ''
+      this.electronicCardTemplateUrl = ''
+      this.temporaryRow = row
+      this.remarkDialogFormVisible = true
+      this.remark = row.remark
+    },
+    submitRemark() {
+      updateItem(this.temporaryRow.id, {
+        remark: this.remark
+      }).then(response => {
+        this.getList()
+        this.remarkDialogFormVisible = false
         this.$message({
           message: response.message,
           type: 'success'

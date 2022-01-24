@@ -8,6 +8,11 @@
 
     <el-table :data="list" border fit highlight-current-row style="width: 100%">
       <el-table-column type="selection" width="55" />
+      <el-table-column align="center" label="模板名称">
+        <template slot-scope="{row}">
+          <span>{{ row.name }}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="来自">
         <template slot-scope="{row}">
           <span>{{ row.from }}</span>
@@ -23,11 +28,6 @@
           <img :src="row.image" alt="" style="width: 40px">
         </template>
       </el-table-column>
-      <el-table-column align="center" label="赠送备注">
-        <template slot-scope="{row}">
-          <span>{{ row.remark }}</span>
-        </template>
-      </el-table-column>
       <el-table-column align="center" label="操作" width="120">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="editStore(row.id)">
@@ -39,6 +39,9 @@
 
     <el-dialog title="模板管理" width="700px" :visible.sync="dialogFormVisible">
       <el-form ref="couponForm" :rules="rules" :model="couponForm" label-position="right" label-width="110px" style="width: 80%; margin-left:50px;">
+        <el-form-item label="模板名称">
+          <el-input v-model="couponForm.name" />
+        </el-form-item>
         <el-form-item label="来自" prop="from">
           <el-input v-model="couponForm.from" placeholder="XX公司" />
         </el-form-item>
@@ -58,9 +61,6 @@
             <i v-else class="el-icon-plus thumbnail-uploader-icon" />
           </el-upload>
         </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="couponForm.remark" />
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -79,7 +79,7 @@ const defaultStoreForm = {
   from: '',
   image: null,
   description: null,
-  remark: null
+  name: null
 }
 
 export default {
