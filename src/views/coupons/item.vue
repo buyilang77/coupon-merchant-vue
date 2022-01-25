@@ -40,7 +40,7 @@
       </el-table-column>
       <el-table-column align="center" min-width="150px" label="电子卡">
         <template slot-scope="{row}">
-          <span>{{ row.electronic_card_template && row.electronic_card_template.name }}</span>
+          <span class="pointer" @click="toElectronicCard">{{ row.electronic_card_template && row.electronic_card_template.name }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" min-width="150px" label="备注">
@@ -271,6 +271,9 @@ export default {
           type: 'success'
         })
       })
+    },
+    toElectronicCard() {
+      this.$router.push({ name: 'ElectronicCardTemplateIndex' })
     },
     handleCopy(row) {
       this.electronicCardTemplateId = ''
