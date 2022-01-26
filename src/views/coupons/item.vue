@@ -40,7 +40,14 @@
       </el-table-column>
       <el-table-column align="center" min-width="150px" label="电子卡">
         <template slot-scope="{row}">
-          <span class="pointer" @click="toElectronicCard">{{ row.electronic_card_template && row.electronic_card_template.name }}</span>
+          <span class="pointer" @click="toElectronicCard(row)">{{ row.electronic_card_template && row.electronic_card_template.name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="110px" align="center" label="生成电子卡">
+        <template slot-scope="{row}">
+          <el-button size="mini" @click="handleCopy(row)">
+            生成
+          </el-button>
         </template>
       </el-table-column>
       <el-table-column align="center" min-width="150px" label="备注">
@@ -48,14 +55,6 @@
           <span v-if="row.remark" style="margin-right: 10px">{{ row.remark }}</span><el-button icon="el-icon-edit-outline" size="mini" @click="handleRemark(row)" />
         </template>
       </el-table-column>
-      <el-table-column width="110px" align="center" label="生成提货信息">
-        <template slot-scope="{row}">
-          <el-button size="mini" @click="handleCopy(row)">
-            生成
-          </el-button>
-        </template>
-      </el-table-column>
-
       <el-table-column class-name="status-col" label="开启状态" width="110">
         <template slot-scope="{row}">
           <el-tag :type="row.open_status | openStatusType">
@@ -272,8 +271,8 @@ export default {
         })
       })
     },
-    toElectronicCard() {
-      this.$router.push({ name: 'ElectronicCardTemplateIndex' })
+    toElectronicCard(row) {
+      window.open(`http://h5.hipi5.com/#/coupons/${this.id}/electronic-card?card_num=${row.code}&password=${row.password}`)
     },
     handleCopy(row) {
       this.electronicCardTemplateId = ''
