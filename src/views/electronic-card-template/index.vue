@@ -39,17 +39,17 @@
 
     <el-dialog title="模板管理" width="700px" :visible.sync="dialogFormVisible">
       <el-form ref="couponForm" :rules="rules" :model="couponForm" label-position="right" label-width="110px" style="width: 80%; margin-left:50px;">
-        <el-form-item label="模板名称">
+        <el-form-item label="模板名称" prop="name">
           <el-input v-model="couponForm.name" />
         </el-form-item>
-        <el-form-item label="来自" prop="from">
+        <el-form-item label="来自">
           <el-input v-model="couponForm.from" placeholder="XX公司" />
         </el-form-item>
         <el-form-item label="祝福语">
           <el-input v-model="couponForm.description" type="textarea" />
         </el-form-item>
         <div style="margin: 0 0 22px 110px;"><el-link href="http://thb.piao8.net/zhufuyu.html" target="_blank">祝福语参考</el-link></div>
-        <el-form-item label="背景模板">
+        <el-form-item label="卡片背景图">
           <el-upload
             class="thumbnail-uploader"
             action=""
@@ -101,7 +101,7 @@ export default {
       multipleSelection: [],
       couponForm: Object.assign({}, defaultStoreForm),
       rules: {
-        from: [{ required: true, message: '来自不可为空!', trigger: 'blur' }]
+        name: [{ required: true, message: '模板名称不可为空!', trigger: 'blur' }]
       }
     }
   },

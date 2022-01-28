@@ -329,6 +329,9 @@ export default {
         electronic_card_template_id: this.electronicCardTemplateId
       }).then(response => {
         this.electronicCardTemplateUrl = `http://h5.hipi5.com/#/coupons/${this.couponForm.id}/electronic-card?card_num=${this.temporaryRow.code}&password=${this.temporaryRow.password}`
+        window.open(this.electronicCardTemplateUrl)
+        this.selectTemplateDialogFormVisible = false
+        this.getList()
         this.$message({
           message: response.message,
           type: 'success'
