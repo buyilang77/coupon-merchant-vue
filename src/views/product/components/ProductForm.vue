@@ -1,13 +1,6 @@
 <template>
   <div class="createPost-container">
     <el-form ref="postForm" :model="postForm" :rules="rules" class="form-container">
-
-      <sticky :z-index="10" class-name="sub-navbar draft">
-        <el-button style="margin-left: 10px;" type="success" @click="submitForm">
-          发布
-        </el-button>
-      </sticky>
-
       <div class="createPost-main-container">
         <el-row>
           <el-col :span="24">
@@ -42,6 +35,10 @@
           <div class="title-label">商品描述</div>
           <Tinymce ref="editor" v-model="postForm.description" :height="400" />
         </el-form-item>
+        <el-divider />
+        <div class="text-center">
+          <el-button v-loading="loading" style="margin-left: 10px; width: 150px" @click="submitForm">提交</el-button>
+        </div>
       </div>
     </el-form>
   </div>
@@ -49,7 +46,6 @@
 
 <script>
 import Tinymce from '@/components/Tinymce'
-import Sticky from '@/components/Sticky'
 import { fetchProduct, updateProduct, createProduct } from '@/api/product'
 import { image } from '@/api/upload'
 
@@ -63,7 +59,7 @@ const defaultForm = {
 
 export default {
   name: 'ProductForm',
-  components: { Tinymce, Sticky },
+  components: { Tinymce },
   props: {
     isEdit: {
       type: Boolean,

@@ -2,8 +2,11 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="listQuery.code" placeholder="请输入关键字" style="width: 200px;" class="filter-item mr-1" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.open_status" placeholder="请选择状态" clearable class="filter-item mr-1" style="width: 130px">
+      <el-select v-model="listQuery.open_status" placeholder="选择开启状态" clearable class="filter-item mr-1" style="width: 130px">
         <el-option v-for="(item, index) in statusOptions" :key="index" :label="item" :value="index" />
+      </el-select>
+      <el-select v-model="listQuery.redemption_status" placeholder="选择兑换状态" clearable class="filter-item mr-1" style="width: 130px">
+        <el-option v-for="(item, index) in redemptionStatusOptions" :key="index" :label="item" :value="index" />
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
@@ -226,6 +229,7 @@ export default {
         items: undefined
       },
       statusOptions: ['未开启', '已开启'],
+      redemptionStatusOptions: ['未兑换', '已兑换'],
       downloadLoading: false,
       dialogFormVisible: false,
       importDialogFormVisible: false,

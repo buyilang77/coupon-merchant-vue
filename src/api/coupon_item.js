@@ -8,7 +8,8 @@ export function fetchList(id, query) {
     params: {
       filter: {
         code: query.code,
-        status: query.status
+        open_status: query.open_status,
+        redemption_status: query.redemption_status
       },
       page: query.page,
       limit: query.limit
