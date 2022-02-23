@@ -42,7 +42,7 @@
       </el-table-column>
       <el-table-column label="二维码" align="center" width="95">
         <template slot-scope="{row}">
-          <qrcode-vue :value="row.qr_code_link" class="ddd" size="50" level="H" />
+          <img :src="row.qr_code_preview" alt="" style="width: 60px">
         </template>
       </el-table-column>
       <el-table-column label="状态" class-name="status-col" width="100">
@@ -74,12 +74,11 @@
 <script>
 import { fetchList, updateActivity, destroyActivity } from '@/api/activity'
 import { fetchList as productList } from '@/api/product'
-import QrcodeVue from 'qrcode.vue'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   name: 'Activity',
-  components: { Pagination, QrcodeVue },
+  components: { Pagination },
   directives: { waves },
   filters: {
     statusFilter(status) {
