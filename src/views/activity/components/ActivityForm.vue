@@ -144,7 +144,7 @@ export default {
                 duration: 2000
               })
               this.loading = false
-              this.$router.push('/activity/index')
+              this.$router.push({ name: 'ActivityIndex' })
             })
           } else {
             createActivity(this.postForm).then(response => {
@@ -156,8 +156,8 @@ export default {
                 duration: 2000
               })
               this.loading = false
-              this.$router.push('/activity/index')
             })
+            this.$router.push({ name: 'ActivityIndex' })
           }
         } else {
           // TODO 2556

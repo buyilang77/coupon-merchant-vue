@@ -17,14 +17,14 @@ import Layout from '@/layout'
  * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
-    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
-    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
-    noCache: true                if set true, the page will no be cached(default is false)
-    affix: true                  if set true, the tag will affix in the tags-view
-    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
-  }
+     roles: ['admin','editor']    control the page roles (you can set multiple roles)
+     title: 'title'               the name show in sidebar and breadcrumb (recommend set)
+     icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
+     noCache: true                if set true, the page will no be cached(default is false)
+     affix: true                  if set true, the tag will affix in the tags-view
+     breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
+     activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
+   }
  */
 
 /**
@@ -62,7 +62,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/coupons/index',
+    redirect: '/dashboard',
     children: [
       {
         path: 'dashboard',
@@ -76,16 +76,16 @@ export const constantRoutes = [
     path: '/product',
     component: Layout,
     redirect: '/product/index',
-    name: '商品管理',
+    name: 'Product',
     meta: {
-      title: '商品管理',
+      title: '商品',
       icon: 'el-icon-s-help'
     },
     children: [
       {
         path: 'index',
         component: () => import('@/views/product/index'),
-        name: 'Product',
+        name: 'ProductIndex',
         meta: { title: '商品列表', icon: 'list' }
       },
       {
@@ -104,120 +104,71 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/activity',
+    path: '/card',
     component: Layout,
     redirect: '/activity/index',
     name: 'Activity',
     meta: {
-      title: '提货卡管理',
-      icon: 'shopping'
+      title: '卡片',
+      icon: 'el-icon-s-card'
     },
     children: [
       {
-        path: 'index',
+        path: 'activity',
         component: () => import('@/views/activity/index'),
         name: 'ActivityIndex',
-        meta: { title: '提货卡列表', icon: 'list', noCache: true }
+        meta: { title: '提货卡', icon: 'list', noCache: true }
       },
       {
-        path: 'create',
+        path: 'activity/create',
         component: () => import('@/views/activity/create'),
         name: 'ActivityCreate',
-        meta: { title: '添加', icon: 'edit' }
+        hidden: true,
+        meta: { title: '添加', icon: 'edit', activeMenu: '/card/activity' }
       },
       {
-        path: 'edit/:id(\\d+)',
+        path: 'activity/edit/:id(\\d+)',
         component: () => import('@/views/activity/edit'),
-        name: 'ActivityEdit',
-        meta: { title: '编辑卡券', activeMenu: '/activity/index' },
-        hidden: true
-      }
-    ]
-  },
-  {
-    path: '/coupons',
-    component: Layout,
-    redirect: '/coupons/index',
-    name: '提货卡管理',
-    hidden: true,
-    meta: {
-      title: '提货卡管理',
-      icon: 'shopping'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/coupons/index'),
-        name: 'Coupon',
-        meta: { title: '卡密管理', icon: 'list', noCache: true },
-        hidden: true
-      },
-      {
-        path: 'item/:id(\\d+)',
-        component: () => import('@/views/coupons/item'),
-        name: 'Coupon items',
-        meta: { title: '查看兑换码', noCache: true, activeMenu: '/activity/index' },
-        hidden: true
-      },
-      {
-        path: 'edit/:id(\\d+)',
-        component: () => import('@/views/coupons/edit'),
         name: 'CouponEdit',
-        meta: { title: '编辑卡券', activeMenu: '/coupons/index' },
+        meta: { title: '编辑卡券', activeMenu: '/card/activity' },
         hidden: true
-      }
-    ]
-  },
-  {
-    path: '/recharge-card',
-    component: Layout,
-    redirect: '/recharge-card/index',
-    name: '储值卡管理',
-    meta: {
-      title: '储值卡管理',
-      icon: 'shopping'
-    },
-    children: [
+      },
       {
-        path: 'index',
+        path: 'activity/item/:id(\\d+)',
+        component: () => import('@/views/coupons/item'),
+        name: 'CouponItems',
+        meta: { title: '查看兑换码', noCache: true, activeMenu: '/card/activity' },
+        hidden: true
+      },
+      {
+        path: 'recharge-card',
         component: () => import('@/views/recharge-card/index'),
         name: 'RechargeCardIndex',
-        meta: { title: '储值卡列表', icon: 'list', noCache: true }
+        meta: { title: '储值卡', icon: 'list', noCache: true }
       },
       {
-        path: 'create',
+        path: 'recharge-card/create',
         component: () => import('@/views/recharge-card/create'),
         name: 'RechargeCardCreate',
-        meta: { title: '添加', icon: 'edit' }
+        hidden: true,
+        meta: { title: '添加', icon: 'edit', activeMenu: '/card/recharge-card' }
       },
       {
-        path: 'item/:id(\\d+)',
-        component: () => import('@/views/recharge-card/item'),
-        name: 'RechargeCardItems',
-        meta: { title: '查看兑换码', noCache: true, activeMenu: '/recharge-card/index' },
-        hidden: true
-      },
-      {
-        path: 'edit/:id(\\d+)',
+        path: 'recharge-card/edit/:id(\\d+)',
         component: () => import('@/views/recharge-card/edit'),
         name: 'RechargeCardEdit',
-        meta: { title: '编辑储值卡', activeMenu: '/recharge-card/index' },
+        meta: { title: '编辑储值卡', activeMenu: '/card/recharge-card' },
         hidden: true
-      }
-    ]
-  },
-  {
-    path: '/electronic-card-template',
-    component: Layout,
-    redirect: '/electronic-card-template/index',
-    name: 'ElectronicCardTemplate',
-    meta: {
-      title: '电子卡模板',
-      icon: 'shopping'
-    },
-    children: [
+      },
       {
-        path: 'index',
+        path: 'recharge-card/item/:id(\\d+)',
+        component: () => import('@/views/recharge-card/item'),
+        name: 'RechargeCardItems',
+        meta: { title: '查看兑换码', noCache: true, activeMenu: '/card/recharge-card' },
+        hidden: true
+      },
+      {
+        path: 'electronic-card',
         component: () => import('@/views/electronic-card-template/index'),
         name: 'ElectronicCardTemplateIndex',
         meta: { title: '电子卡模板', icon: 'list', noCache: true }
@@ -225,73 +176,37 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/write-off',
+    path: '/order',
     component: Layout,
-    name: '自提订单',
+    name: '订单',
     meta: {
-      title: '自提订单',
-      icon: 'list'
+      title: '订单',
+      icon: 'el-icon-s-order'
     },
     children: [
+      {
+        path: 'pick-up',
+        component: () => import('@/views/order/index'),
+        name: 'PickUpList',
+        meta: { title: '提货列表', icon: 'list' }
+      },
       {
         path: 'recharge-card',
         component: () => import('@/views/write-off/rechargeCard'),
         name: 'RechargeCardOrder',
-        meta: { title: '储值卡' }
+        meta: { title: '储值卡自提', icon: 'list' }
       },
       {
         path: 'one-time-card',
         component: () => import('@/views/write-off/multipleCard'),
         name: 'OneTimeCardOrder',
-        meta: { title: '提货卡' }
-      }
-    ]
-  },
-  {
-    path: '/shop-order',
-    component: Layout,
-    redirect: '/shop-order/index',
-    name: '购卡订单',
-    meta: {
-      title: '购卡订单',
-      icon: 'list'
-    },
-    children: [
+        meta: { title: '提货卡自提', icon: 'list' }
+      },
       {
-        path: 'index',
+        path: 'shop-order',
         component: () => import('@/views/shopOrder/index'),
         name: 'ShopOrder',
-        meta: { title: '购卡订单' }
-      }
-    ]
-  },
-  {
-    path: '/order',
-    component: Layout,
-    redirect: '/order/index',
-    name: '提货管理',
-    meta: {
-      title: '提货管理',
-      icon: 'list'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/order/index'),
-        name: 'Order',
-        meta: { title: '提货列表' }
-      },
-      {
-        path: 'shipped',
-        component: () => import('@/views/order/shipped'),
-        name: 'Shipped',
-        meta: { title: '已发货列表' }
-      },
-      {
-        path: 'not-shipped',
-        component: () => import('@/views/order/not-shipped'),
-        name: 'NotShipped',
-        meta: { title: '未发货列表' }
+        meta: { title: '购卡订单', icon: 'list' }
       }
     ]
   },
@@ -299,17 +214,17 @@ export const constantRoutes = [
     path: '/store',
     component: Layout,
     redirect: '/store/index',
-    name: '门店管理',
+    name: '门店',
     meta: {
-      title: '门店管理',
-      icon: 'el-icon-s-help'
+      title: '门店',
+      icon: 'el-icon-bank-card'
     },
     children: [
       {
         path: 'index',
         component: () => import('@/views/store/index'),
         name: 'Store',
-        meta: { title: '门店列表', icon: 'list' }
+        meta: { title: '门店', icon: 'list' }
       }
     ]
   },

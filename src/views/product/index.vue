@@ -73,7 +73,7 @@ import Tinymce from '@/components/Tinymce'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
-  name: 'Product',
+  name: 'ProductIndex',
   components: { Pagination, Tinymce },
   directives: { waves },
   data() {

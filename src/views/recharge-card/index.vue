@@ -5,6 +5,9 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
+      <el-button v-waves class="filter-item" type="success" icon="el-icon-circle-plus-outline" @click="handleCreate">
+        添加
+      </el-button>
     </div>
 
     <el-table :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
@@ -153,6 +156,9 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
+    },
+    handleCreate() {
+      this.$router.push({ name: 'RechargeCardCreate' })
     },
     handleModifyStatus(row, status) {
       this.$message({

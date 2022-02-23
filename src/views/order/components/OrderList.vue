@@ -198,7 +198,6 @@ export default {
     }
   },
   created() {
-    console.log(this.type)
     switch (this.type) {
       case 'shipped':
         this.listQuery.status = 1
