@@ -110,7 +110,7 @@ export const constantRoutes = [
     name: 'Activity',
     meta: {
       title: '卡片',
-      icon: 'el-icon-s-card'
+      icon: 'el-icon-postcard'
     },
     children: [
       {
