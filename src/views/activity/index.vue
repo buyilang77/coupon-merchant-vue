@@ -14,6 +14,11 @@
     </div>
 
     <el-table :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
+      <el-table-column label="活动ID" align="center" width="120">
+        <template slot-scope="{row}">
+          <span>{{ row.id }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="活动名称" align="center">
         <template slot-scope="{row}">
           <span :title="row.title">{{ row.title }}</span>

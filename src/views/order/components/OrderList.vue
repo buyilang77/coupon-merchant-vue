@@ -11,10 +11,18 @@
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         导出
       </el-button>
+      <el-button v-waves class="filter-item" type="success" icon="el-icon-circle-plus-outline" @click="handleUpload">
+        导入发货信息
+      </el-button>
     </div>
 
     <el-table :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" />
+      <el-table-column label="ID" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.id }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="所属活动" align="center">
         <template slot-scope="{row}">
           <span :title="row.title">{{ row.title }}</span>
@@ -123,15 +131,40 @@
         <el-button type="primary" @click="confirmShipment(temp)">确认</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="导入发货信息" width="30%" :visible.sync="importDialogFormVisible">
+      <div class="import-container">
+        <div>
+          <el-button slot="trigger" size="small" type="info" @click="handleDownloadTemplate">导出待发货订单</el-button>
+        </div>
+        <div>
+          <el-upload
+            action=""
+            :http-request="handleFile"
+            accept=".xlsx"
+          >
+            <el-button slot="trigger" size="small" type="primary">点击上传</el-button>
+          </el-upload>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { fetchList, updateOrder, orderShipment, fetchLogisticsCompanies } from '@/api/order'
+import {
+  fetchList,
+  updateOrder,
+  orderShipment,
+  fetchLogisticsCompanies,
+  importOrderTemplate,
+  importOrder
+} from '@/api/order'
 import { fetchList as productList } from '@/api/product'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { regionData, CodeToText } from 'element-china-area-data'
+import fileDownload from 'js-file-download'
 export default {
   name: 'Coupon',
   components: { Pagination },
@@ -193,6 +226,7 @@ export default {
         status: [{ required: true, message: '状态不可为空!', trigger: 'blur' }]
       },
       downloadLoading: false,
+      importDialogFormVisible: false,
       regionOptions: regionData,
       multipleSelection: []
     }
@@ -287,6 +321,25 @@ export default {
         this.downloadLoading = false
       })
     },
+    handleUpload() {
+      this.importDialogFormVisible = true
+    },
+    handleFile(file) {
+      const formData = new FormData()
+      formData.set('file', file.file)
+      importOrder(this.id, formData).then(() => {
+        this.importDialogFormVisible = false
+        this.$message.success('导入成功!')
+        this.getList()
+      })
+    },
+    handleDownloadTemplate() {
+      this.downloadLoading = true
+      importOrderTemplate().then(res => {
+        fileDownload(res, 'ImportOrderTemplate.xlsx')
+        this.downloadLoading = false
+      })
+    },
     formatItem(filterVal) {
       let items = []
       if (this.multipleSelection.length > 0) {
@@ -322,7 +375,14 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+  .import-container {
+    display: flex;
+    justify-content: center;
+    div {
+      margin: 0 5px;
+    }
+  }
   .line {
     text-align: center;
   }

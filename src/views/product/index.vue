@@ -15,6 +15,11 @@
       highlight-current-row
       style="width: 100%;"
     >
+      <el-table-column label="商品ID" align="center" width="120">
+        <template slot-scope="{row}">
+          <span>{{ row.id }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="商品名称" align="center">
         <template slot-scope="{row}">
           <span :title="row.name">{{ row.name }}</span>

@@ -55,3 +55,19 @@ export function fetchLogisticsCompanies() {
     method: 'get'
   })
 }
+
+export function importOrder(coupon_id, data) {
+  return request({
+    url: `/import/order/logistics`,
+    method: 'post',
+    data
+  })
+}
+
+export function importOrderTemplate() {
+  return request({
+    url: `/import/template/order`,
+    method: 'get',
+    responseType: 'blob'
+  })
+}
