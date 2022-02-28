@@ -11,6 +11,7 @@
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         导出
       </el-button>
+      <el-button v-waves class="filter-item" icon="el-icon-download" type="info" @click="handleDownloadTemplate">导出待发货订单</el-button>
       <el-button v-waves class="filter-item" type="success" icon="el-icon-circle-plus-outline" @click="handleUpload">
         导入发货信息
       </el-button>
@@ -134,9 +135,6 @@
 
     <el-dialog title="导入发货信息" width="30%" :visible.sync="importDialogFormVisible">
       <div class="import-container">
-        <div>
-          <el-button slot="trigger" size="small" type="info" @click="handleDownloadTemplate">导出待发货订单</el-button>
-        </div>
         <div>
           <el-upload
             action=""
@@ -334,10 +332,8 @@ export default {
       })
     },
     handleDownloadTemplate() {
-      this.downloadLoading = true
       importOrderTemplate().then(res => {
         fileDownload(res, 'ImportOrderTemplate.xlsx')
-        this.downloadLoading = false
       })
     },
     formatItem(filterVal) {
